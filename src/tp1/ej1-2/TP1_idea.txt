@@ -1,0 +1,49 @@
+V= {brad pitt, angie j, snoop, guy fieri, tony, michael, vito, sonny, paulie, silvio}
+
+E={ {brad, angie}, {snoop, angie}, {tony, silvio}, {tony, paulie}, {tony, michael}, {tony, vito}, {vito, sonny}, {vito, michael}, {brad, tony}, {paulie, michael}, {vito, paulie}, {michael, paulie}, {michael, sonny}, {guy fieri, paulie}  }
+
+Influencias: 
+Tony = 10
+Vito = 10 
+Brad = 7
+Angie = 8
+Snoop = 9
+Guy fieri = 2
+Michael = 9
+Sonny = 7
+Paulie = 1
+Silvio = 5
+
+
+Q = {}
+K = {brad pitt, angie j, snoop, guy fieri, tony, michael, vito, sonny, paulie, silvio}
+K es el conjunto que tiene a todos los amigos de Brad (o del actor en el que estamos parados), entonces si agregamos a brad, dejamos solo los actores que sean sus amigos en K. (?)
+
+La idea del invariante es que no haya cliques que sean "islas", es decir que la clique quede totalmente aislada del resto de la red social. Por eso cada actor de K tiene un no amigo en K, ya que el actor en el que estamos parados tiene al menos un amigo de afuera de la clique. 
+
+Entra brad? si
+Q = {Brad}
+K = {angie, tony}
+
+Q = {Brad, angie}
+K = {}
+
+
+Ordenariamos de mayor a menor ya que implica poder podar ramas del arbol antes de llegar al final. 
+
+
+1. ordenar V de mayor a menor por nivel de influencia. (antes de entrar a la funcion)
+
+2. ir recorriendo V, actor por actor, agregando el actual si es amigo de todos aquellos en Q (sol parcial). Una vez agregado, actualizar K para que contenga solo aquellos actores que sean amigos de todos los de Q. Llamar a la funcion con el actor agregado y luego quitarlo de Q. 
+
+3. Si K es vacio, fijarse si la suma de las influencias de los actores de Q supera a la suma maxima vista hasta el momento y en caso afirmativo, actualizarla. 
+
+Parametros de la funcion: Q, K e i (indice de V). 
+
+Podas:
+- Fijarse antes de cada llamada a la funcion, si la suma de Q y los actores restantes de K no supera la suma maxima hasta ahora, entonces no hacer la llamada. (poda por optimalidad)
+
+
+
+
+
