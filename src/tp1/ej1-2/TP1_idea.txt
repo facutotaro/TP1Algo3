@@ -14,7 +14,6 @@ Sonny = 7
 Paulie = 1
 Silvio = 5
 
-
 Q = {}
 K = {brad pitt, angie j, snoop, guy fieri, tony, michael, vito, sonny, paulie, silvio}
 K es el conjunto que tiene a todos los amigos de Brad (o del actor en el que estamos parados), entonces si agregamos a brad, dejamos solo los actores que sean sus amigos en K. (?)
@@ -29,21 +28,57 @@ Q = {Brad, angie}
 K = {}
 
 
-Ordenariamos de mayor a menor ya que implica poder podar ramas del arbol antes de llegar al final. 
+Ordenariamos de menor a mayor ya que implica poder podar ramas del arbol antes de llegar al final. (asumiendo que agarramos siempre el elemento K[K.size()-1] para decidir si lo agregamos a Q o no) 
 
 
-1. ordenar V de mayor a menor por nivel de influencia. (antes de entrar a la funcion)
+1. ordenar V de menor a mayor por nivel de influencia. (antes de entrar a la funcion)
 
-2. ir recorriendo V, actor por actor, agregando el actual si es amigo de todos aquellos en Q (sol parcial). Una vez agregado, actualizar K para que contenga solo aquellos actores que sean amigos de todos los de Q. Llamar a la funcion con el actor agregado y luego quitarlo de Q. 
+2. Agregar K[1] a Q si es amigo de todos aquellos en Q (sol parcial). Una vez agregado, actualizar K para que contenga solo aquellos actores que sean amigos de todos los de Q. Llamar a la funcion con el actor agregado y luego quitarlo de Q. 
 
 3. Si K es vacio, fijarse si la suma de las influencias de los actores de Q supera a la suma maxima vista hasta el momento y en caso afirmativo, actualizarla. 
 
-Parametros de la funcion: Q, K e i (indice de V). 
+Parametros de la funcion: Q, K. 
 
 Podas:
 - Fijarse antes de cada llamada a la funcion, si la suma de Q y los actores restantes de K no supera la suma maxima hasta ahora, entonces no hacer la llamada. (poda por optimalidad)
 
 
+Algoritmo:
 
+Actor es un struct que contiene una funcion publica llamada influencia que toma como entrada un actor y me devuelve su poder de influencia. 
 
+V es el vector que contiene a todos los actores.
+
+E es el vector de tuplas que contiene a todas las amistades de la red social.
+
+Q y K son vectores de actores. i es un int que recorre el vector V.
+
+vector<actor> clique_con_mas_influencia(void){
+    ordenar vector V en orden creciente de influencia 
+    llamar a clique con Q=<>, K=V.
+    devolver res
+}
+
+vector <actor> res
+
+void clique(Q,K){
+    if(K es vacio){
+        fijarse si la suma de las influencias de Q es mayor a la suma maxima, 
+            actualizar suma maxima 
+            res = Q
+    }
+    if(suma de Q + K actual <= suma maxima){return} else {
+        if (K[1] es amigo de los de Q) {
+            agrego K[1] a Q 
+            actualizo K con sus amigos 
+            llamo clique(Q', K')
+            sacas K[1] de Q 
+            actualizo K
+            llamas clique(Q, K)
+        } else {
+            saco el primer elemento de K
+            llamo clique(Q, K) 
+        }
+    }
+}
 
