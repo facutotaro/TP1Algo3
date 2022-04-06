@@ -1,8 +1,9 @@
 #ifndef REDSOCIAL
 #define REDSOCIAL
 
-#include "string"
+#include <iostream>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -15,14 +16,13 @@ public:
 
 	string nombre() const;
 
-	vector<Actor> actores;
-
 	//vector <Actor> amigos_de(int id); Funcion Auxiliar maybe?
-
-	vector<pair<Actor, Actor>> amistades;
 
 private:
 	string _nombreDelArchivo;
+	vector<Actor> _actores;
+	vector<pair<int, int>> _amistades;
+
 };
 
 struct Actor
