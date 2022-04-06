@@ -55,7 +55,13 @@ Q y K son vectores de actores. i es un int que recorre el vector V.
 
 vector<actor> clique_con_mas_influencia(void){
     ordenar vector V en orden creciente de influencia 
-    llamar a clique con Q=<>, K=V.
+    if (hay alguien que es amigo de todos)
+        lo meto en Q y lo saco de K
+        llamo a clique con Q<mas popular>, K = V - <menos popular> 
+    if (hay islas)
+        llamo a cada isla por separado y comparo el maximo entre todos y me quedo con el maximo de todos
+    else 
+        llamar a clique con Q=<>, K=V.
     devolver res
 }
 
