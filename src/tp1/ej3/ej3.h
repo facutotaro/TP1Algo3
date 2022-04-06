@@ -18,20 +18,22 @@ public:
 
     int solver_bu() const;
 
-	string nombre() const;
+    vector<pair<int, int>> reconstruir() const;
 
+	string nombre() const;
 private:
+
 	string _nombreDelArchivo;
 
     vector<pair<int, int>> _actividades;
 
     vector<int> _beneficios;
 
-    size_t _cantActividades;
+    int _cantActividades;
 
-    vector<int> _noColisiones_td;
+    //vector<int> _noColisiones_td;
 
-    vector<int> _noColisiones_bu;
+    //vector<int> _noColisiones_bu;
 
     mutable vector<int> _memo;
 
