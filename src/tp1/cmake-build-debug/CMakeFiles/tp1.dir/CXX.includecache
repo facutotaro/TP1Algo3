@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/ej1-2/ej1-2.cpp
+ej1-2.h
+E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/ej1-2/ej1-2.h
+
+E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/ej1-2/ej1-2.h
+iostream
+-
+vector
+-
+fstream
+-
+

@@ -7,8 +7,13 @@ RedSocial::RedSocial(std::string s)
     ifstream my_file;
     my_file.open("../ej1-2/instancias-ej1-2/" + _nombreDelArchivo + ".clq", ios::in);
     if (!my_file) {
+        printf("Bobo no hay nada\n");
     }
     else {
+        string o,p;
+        my_file >> o;
+        my_file >> p;
+
         int N = 0; 
 		int M = 0;
 		
@@ -22,6 +27,8 @@ RedSocial::RedSocial(std::string s)
 
         while (i < N) {
 			Actor actor = Actor(0, 0);
+			string n;
+			my_file >> n;
 			my_file >> actor.id;
 			my_file >> actor.influencia;
 			_actores[i] = actor;
@@ -29,8 +36,10 @@ RedSocial::RedSocial(std::string s)
         }
 
 		while (i < M) {
-			my_file >> _amistades[i].first; 
-			my_file >> _amistades[i].second;
+		    string e;
+		    my_file >> e;
+			my_file >> _amistades[i-N].first;
+			my_file >> _amistades[i-N].second;
 			i++;
 		}
 

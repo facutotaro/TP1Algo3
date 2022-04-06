@@ -7,6 +7,15 @@
 
 using namespace std;
 
+struct Actor
+{
+	Actor(const int ID, const int inf);
+
+	int id;
+
+	int influencia;
+};
+
 class RedSocial
 {
 public:
@@ -25,13 +34,6 @@ private:
 
 };
 
-struct Actor
-{
-	Actor(const int ID, const int inf);
 
-	int id;
-
-	int influencia;
-};
 
 #endif // !REDSOCIAL
