@@ -33,16 +33,19 @@ Ordenamiento de Info:
 
 Idea: 
 
-    Ordenariamos de menor a mayor ya que implica poder podar ramas del arbol antes de llegar al final. (asumiendo que agarramos siempre el elemento K[K.size()-1] para decidir si lo agregamos a Q o no) 
+    Ordenariamos de mayor a menor ya que implica poder podar ramas del arbol antes de llegar al final. (asumiendo que agarramos siempre el elemento 0)
 
-    1. ordenar V de menor a mayor por nivel de influencia. (antes de entrar a la funcion)
+    1. ordenar V de mayor a menor por nivel de influencia. (antes de entrar a la funcion)
 
-    2. Agregar K[1] a Q si es amigo de todos aquellos en Q (sol parcial). Una vez agregado, actualizar K para que contenga solo aquellos actores que sean amigos de todos los de Q. Llamar a la funcion con el actor agregado y luego quitarlo de Q. 
+    2. Agregar K[1] a Q si es amigo de todos aquellos en Q (sol parcial). Una vez agregado, actualizar K para que contenga solo aquellos actores que sean amigos de todos los de Q. PERO si hay cliques en K, agregar esa clique a Q. Llamamos a la funcion con el nuevo Q (Q + Clique de K).
 
     3. Si K es vacio, fijarse si la suma de las influencias de los actores de Q supera a la suma maxima vista hasta el momento y en caso afirmativo, actualizarla. 
 
     Podas:
         - Fijarse antes de cada llamada a la funcion, si la suma de Q y los actores restantes de K no supera la suma maxima hasta ahora, entonces no hacer la llamada. (poda por optimalidad)
+
+    Idea:
+        - Tener una funcion que dado un vector de actores te calcule la influencia de todo ese grupo.
 
 Algoritmo:
 
@@ -58,9 +61,7 @@ Algoritmo:
         Ordenar vector V en orden creciente de influencia 
         if (hay alguien que es amigo de todos)
             lo meto en Q y lo saco de K asi conservo el invariante de K 
-            llamo a clique con Q<mas popular>, K = V - <mas popular> 
-        if (hay islas) 
-            llamo a cada isla por separado y comparo el maximo entre todos y me quedo con el maximo de todos
+            llamo a clique con Q<mas popular>, K = V - <mas popular>
         else 
             llamar a clique con Q=<>, K=V.
         devolver res
@@ -88,6 +89,18 @@ Algoritmo:
             }
         }
     }
+
+Ejemplito:
+{tony, michael, paulie, silvio}
+{(tony, michael), (tony, silvio), (paulie, silvio), (michael, silvio)}
+
+Q={silvio}
+K={tony, paulie, michael}
+de estos cuales puedo agregar? o sea cual es la clique mas grande de k?
+la agrego a Q.
+llamo a la funcion con esta configuracion.
+saco al actor que meti en Q y llamo devuelta con otro.
+
 
 
 Incognitas:

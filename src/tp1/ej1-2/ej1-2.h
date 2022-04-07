@@ -25,7 +25,17 @@ public:
 
 	string nombre() const;
 
-	//vector <Actor> amigos_de(int id); Funcion Auxiliar maybe?
+	vector<Actor> actores();
+
+	vector<pair<int,int>> amistades();
+
+	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K);
+
+	int influenciaDeGrupo(vector<Actor> grupo);
+
+	void soloAmigosDeQEnK(vector<Actor> Q, vector<Actor> K);
+
+	void agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, vector<Actor> K);
 
 private:
 	string _nombreDelArchivo;
