@@ -125,8 +125,8 @@ int Schedule::bottom_up() const {
         }
     }
     return M[_cantActividades - 1];*/
-    int idx = _cantActividades;
-    for (int i = M.size()-2; i >=0 ; i--;)
+    int idx = _cantActividades - 1;
+    for (int i = M.size()-2; i >=0 ; i--)
     {
         if (idx >= 0)
         {
@@ -136,7 +136,11 @@ int Schedule::bottom_up() const {
             }
             else
             {
-                M[i] = max(_beneficios[idx] + M[_actividades[idx].second + 1], M[i], M[i+1]);
+                int ag = 0;
+                if(_actividades[idx].second != M.size() - 1){
+                    ag = M[_actividades[idx].second + 1];
+                }
+                M[i] = max(_beneficios[idx] + ag, max(M[i], M[i+1]));
                 idx--;
             }
         }
