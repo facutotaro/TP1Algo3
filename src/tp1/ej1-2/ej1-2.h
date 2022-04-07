@@ -4,16 +4,19 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
 struct Actor
 {
-	Actor(const int ID, const int inf);
+	Actor(int ID, int inf);
 
 	int id;
 
 	int influencia;
+
+    bool operator==(Actor v) const;
 };
 
 class RedSocial
@@ -25,22 +28,29 @@ public:
 
 	string nombre() const;
 
-	vector<Actor> actores();
+	vector<Actor> actores() const;
 
-	vector<pair<int,int>> amistades();
+	vector<pair<int,int>> amistades() const;
 
-	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K);
+	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K) const;
 
-	int influenciaDeGrupo(vector<Actor> grupo);
+	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
-	void soloAmigosDeQEnK(vector<Actor> Q, vector<Actor> K);
+	void soloAmigosDeQEnK(const vector<Actor>& Q, vector<Actor> K) const;
 
-	void agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, vector<Actor> K);
+	void agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, const vector<Actor>& K) const;
+
+	vector<Actor> cliqueMasGrande(const vector<Actor>& grupo) const;
+
+	bool sonAmigos(Actor v, Actor u) const;
+
+	vector<Actor> solver() const;
 
 private:
 	string _nombreDelArchivo;
 	vector<Actor> _actores;
 	vector<pair<int, int>> _amistades;
+
 
 };
 

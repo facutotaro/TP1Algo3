@@ -4,10 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/ej1-2/ej1-2.cpp" "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/ej1-2/ej1-2.cpp.obj"
-  "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/ej3/ej3.cpp" "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/ej3/ej3.cpp.obj"
-  "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/ej4/ej4.cpp" "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/ej4/ej4.cpp.obj"
-  "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/tp1.cpp" "E:/julia/Documents/UBA/PrimerCuatri2022/Algoritmos3/TPS/TP1/Gitfiles/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/tp1.cpp.obj"
+  "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/ej1-2/ej1-2.cpp" "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/ej1-2/ej1-2.cpp.obj"
+  "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/ej3/ej3.cpp" "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/ej3/ej3.cpp.obj"
+  "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/ej4/ej4.cpp" "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/ej4/ej4.cpp.obj"
+  "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/tp1.cpp" "F:/Desktop/Facultad/Algoritmos y Estructura de Datos III/TP1Algo3/src/tp1/cmake-build-debug/CMakeFiles/tp1.dir/tp1.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
