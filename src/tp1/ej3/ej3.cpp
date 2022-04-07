@@ -136,7 +136,7 @@ int Schedule::bottom_up() const {
             }
             else
             {
-                M[i] = max(_beneficios[idx] + M[_actividades[idx].second + 1], M[i]);
+                M[i] = max(_beneficios[idx] + M[_actividades[idx].second + 1], M[i], M[i+1]);
                 idx--;
             }
         }
@@ -145,6 +145,7 @@ int Schedule::bottom_up() const {
             M[i] = M[i + 1];
         }
     }
+    return M[0];
 }
 
 vector<pair<int, int>> Schedule::reconstruir() const {
