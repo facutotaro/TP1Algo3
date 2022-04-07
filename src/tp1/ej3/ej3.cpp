@@ -107,7 +107,7 @@ int Schedule::top_down(int i) const {
 }
 
 int Schedule::bottom_up() const {
-    vector<int> M(2*_cantActividades, 0);
+    vector<int> M(2*_cantActividades+1, 0);
     /*vector<int> M(_cantActividades, 0);
     M[0] = _beneficios[0];
     for(int j = 1; j < _cantActividades; j++){
@@ -125,6 +125,26 @@ int Schedule::bottom_up() const {
         }
     }
     return M[_cantActividades - 1];*/
+    int idx = _cantActividades;
+    for (int i = M.size()-2; i >=0 ; i--;)
+    {
+        if (idx >= 0)
+        {
+            if (i > _actividades[idx].first)
+            {
+                M[i] = M[i + 1];
+            }
+            else
+            {
+                M[i] = max(_beneficios[idx] + M[_actividades[idx].second + 1], M[i]);
+                idx--;
+            }
+        }
+        else
+        {
+            M[i] = M[i + 1];
+        }
+    }
 }
 
 vector<pair<int, int>> Schedule::reconstruir() const {
