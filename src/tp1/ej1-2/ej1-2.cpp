@@ -32,17 +32,25 @@ RedSocial::RedSocial(std::string s) {
             i++;
         }
 
-        while (i < M) {
+        while (i < M+N) {
             string e;
             my_file >> e;
-            my_file >> _amistades[i - N].first;
-            my_file >> _amistades[i - N].second;
+            my_file >> _amistades[i-N].first;
+            my_file >> _amistades[i-N].second;
             i++;
         }
+
 
         sort(_actores.begin(),_actores.end(), [](Actor v, Actor u){
             return v.influencia > u.influencia;
         });
+
+        _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0));
+
+        for(int i = 0; i < _amistades.size(); i++){
+            _matrizDeAmistades[(_amistades[i]).first][(_amistades[i]).second] = true;
+            _matrizDeAmistades[(_amistades[i]).second][(_amistades[i]).first] = true;
+        }
 
        solver();
 
@@ -64,6 +72,10 @@ vector<Actor> RedSocial::actores() const{
 
 vector<pair<int, int>> RedSocial::amistades() const{
     return _amistades;
+}
+
+vector<vector<bool>> RedSocial::matrizDeAmistades() {
+    return _matrizDeAmistades;
 }
 
 Actor::Actor(const int ID, const int inf) {
@@ -123,7 +135,7 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
     return influenciaDeGrupo;
 }
 
-void RedSocial::soloAmigosDeQEnK(const vector<Actor>& Q, vector<Actor> K) const{
+void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo.
     for(Actor u : K){
         bool esAmigoDeTodos = true;
         for(Actor v : Q){
@@ -135,6 +147,7 @@ void RedSocial::soloAmigosDeQEnK(const vector<Actor>& Q, vector<Actor> K) const{
         }
     }
 }
+
 
 void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, const vector<Actor>& K) const{
     vector<Actor> clique = cliqueMasGrande(K);
@@ -163,14 +176,9 @@ vector<Actor> RedSocial::cliqueMasGrande(const vector<Actor>& grupo) const{
 }
 
 bool RedSocial::sonAmigos(Actor v, Actor u) const{
-    bool sonAmigos = false;
-    pair<int, int> amigos1 = make_pair(v.id, u.id);
-    pair<int, int> amigos2 = make_pair(u.id, v.id);
-    for(pair<int, int> e : amistades()){
-       sonAmigos = sonAmigos || e == amigos1 || e == amigos2;
-    }
-    return sonAmigos;
+    return _matrizDeAmistades[v.id][u.id];
 }
+
 
 
 

@@ -36,11 +36,13 @@ public:
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
-	void soloAmigosDeQEnK(const vector<Actor>& Q, vector<Actor> K) const;
+	void soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const;
 
 	void agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, const vector<Actor>& K) const;
 
 	vector<Actor> cliqueMasGrande(const vector<Actor>& grupo) const;
+
+	vector<vector<bool>> matrizDeAmistades();
 
 	bool sonAmigos(Actor v, Actor u) const;
 
@@ -50,6 +52,7 @@ private:
 	string _nombreDelArchivo;
 	vector<Actor> _actores;
 	vector<pair<int, int>> _amistades;
+	vector<vector<bool>> _matrizDeAmistades;
 
 
 };
