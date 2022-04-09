@@ -32,21 +32,23 @@ public:
 
 	vector<pair<int,int>> amistades() const;
 
-	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K) const;
+	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K);
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
 	void soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const;
 
-	void agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, const vector<Actor>& K) const;
+	void agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const;
 
-	vector<Actor> cliqueMasGrande(const vector<Actor>& grupo) const;
+	vector<Actor> cliqueMasGrande(vector<Actor> grupo) const;
+
+	Actor masPopular(vector<Actor> grupo) const;
 
 	vector<vector<bool>> matrizDeAmistades();
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-	vector<Actor> solver() const;
+	void solver();
 
 private:
 	string _nombreDelArchivo;

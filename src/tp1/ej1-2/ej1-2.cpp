@@ -94,14 +94,18 @@ int influenciaMaximaVista = -1;
 vector<Actor> res;
 int i = 0;
 
-vector<Actor> RedSocial::solver() const {
+void RedSocial::solver() {
     vector<Actor> vacio;
     // Falta ver caso donde hay populares.
     cliqueMasInfluyente(vacio, actores());
-    return res;
+    cout << "[";
+    for (int i=0 ; i < res.size(); i++) {
+        cout << res[i].id << ", ";
+    }
+    cout << "]";
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K) const{
+void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){
     if(K.size()==0){
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
@@ -149,30 +153,60 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
 }
 
 
-void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor> Q, const vector<Actor>& K) const{
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{
     vector<Actor> clique = cliqueMasGrande(K);
     for(Actor v : clique){
         Q.push_back(v);
     }
 }
 
-vector<Actor> RedSocial::cliqueMasGrande(const vector<Actor>& grupo) const{
-    vector<Actor> cliqueMasGrande;
+vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const{
     vector<Actor> cliqueActual;
-    for(Actor v : grupo){
-        cliqueActual.push_back(v);
-        for(Actor u : cliqueActual){
-            for(Actor w : grupo){
-                if(sonAmigos(u, w)){
-                    cliqueActual.push_back(w);
+    while (grupo.size() > 0){
+        cliqueActual.push_back(masPopular(grupo));
+        soloAmigosDeQEnK(cliqueActual, grupo);
+    }
+    return cliqueActual;
+
+    /*vector<Actor> cliqueMasGrande;
+    vector<Actor> cliqueActual;
+    int cliqueActualSize = 0;
+    for(int r = 0; r < grupo.size(); r++){
+        cliqueActual.push_back(grupo[r]);
+        cliqueActualSize++;
+        for(int j = 0; j < cliqueActualSize; j++){
+            for(int k = 0; k < grupo.size(); k++){
+                if(sonAmigos(cliqueActual[j], grupo[k])){
+                    cliqueActual.push_back(grupo[k]);
+                    cliqueActualSize++;
                 }
             }
         }
         if (cliqueActual.size() > cliqueMasGrande.size()){
             cliqueMasGrande = cliqueActual;
         }
+        while (0 < cliqueActual.size()){
+            cliqueActual.pop_back();
+        }
     }
-    return cliqueMasGrande;
+    return cliqueMasGrande;*/
+}
+
+Actor RedSocial::masPopular(vector<Actor> grupo) const{
+    int cantAmigosMax = 0;
+    Actor popular(0,0);
+
+    for (int j = 0; j < grupo.size(); ++j) {
+        int cantAmigos = 0;
+        for (int k = 0; k < _matrizDeAmistades[j].size(); ++k) {
+            cantAmigos += _matrizDeAmistades[j][k];
+        }
+        if (cantAmigos > cantAmigosMax) {
+            cantAmigosMax = cantAmigos;
+            popular = grupo[j];
+        }
+    }
+    return popular;
 }
 
 bool RedSocial::sonAmigos(Actor v, Actor u) const{
