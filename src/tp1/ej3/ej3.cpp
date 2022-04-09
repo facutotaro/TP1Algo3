@@ -8,7 +8,7 @@ Schedule::Schedule(std::string s)
     _nombreDelArchivo = std::move(s);
 
     ifstream my_file;
-    my_file.open("../ej3/instancias-3/instancias/" + _nombreDelArchivo + ".txt", ios::in);
+    my_file.open("../../../ej3/instancias-3/instancias/" + _nombreDelArchivo + ".txt", ios::in);
     if (!my_file) {
     }
     else {
@@ -16,16 +16,13 @@ Schedule::Schedule(std::string s)
 
         _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
         _beneficios = vector<int>(_cantActividades, 0);
-        _memo = vector<int>(_cantActividades, -1);
-        _prepro = vector<int>(2*_cantActividades + 2, -1);
-
-        /*_noColisiones_td = vector<int>(_cantActividades, 0);
-        _noColisiones_bu = vector<int>(_cantActividades, _cantActividades);
-        */
+        _comienzoAct = vector<vector<int>>(2 * _cantActividades+2, vector<int>());
+        _actDespues = vector<int>(_cantActividades, 0);
+        M = vector<int>(_cantActividades + 1, 0);
 
         int i = 0;
 
-        while (!my_file.eof()) {
+        while (!my_file.eof()&&i<_cantActividades) {
 
             my_file >> _actividades[i].first;
             my_file >> _actividades[i].second;
@@ -37,42 +34,30 @@ Schedule::Schedule(std::string s)
     }
     my_file.close();
 
-    /*for(int i = 0; i < _cantActividades; i++) {
-        int prox_sin_col = i + 1;
-        while (prox_sin_col != _cantActividades) {
-            if (_actividades[i].second < _actividades[prox_sin_col].first) {
-                break;
-            }
-            prox_sin_col++;
-        }
-        _noColisiones_td[i] = prox_sin_col;
+    //Creamos un vector de vectores con la hora a la que comienza una actividad
+    for (int i = 0; i < _cantActividades; i++)
+    {
+        _comienzoAct[_actividades[i].first].push_back(i);
     }
-
-    for(int j = _cantActividades - 1; j >= 0; j--) {
-        int ant_sin_col = j - 1;
-        while (ant_sin_col != -1) {
-            if (_actividades[j].first > _actividades[ant_sin_col].second) {
-                break;
-            }
-            ant_sin_col--;
-        }
-        _noColisiones_bu[j] = ant_sin_col;
+    int j = _comienzoAct.size()-1;
+    //Recorremos las este vector y a las que no tienen hora, le agregamos el numero de la siguiente actividad que comienza
+    while (j >= 0 && _comienzoAct[j].empty())
+    {
+        _comienzoAct[j].push_back(_cantActividades);
+        j--;
     }
-    */
-    for(int i = 0; i < _cantActividades; i++){
-        if(_prepro[_actividades[i].first] == -1){
-            _prepro[_actividades[i].first] = i;
+    for (int i = j; i >= 0; i--)
+    {
+        if (_comienzoAct[i].empty())
+        {
+            _comienzoAct[i].push_back(_comienzoAct[i+1][0]);
         }
     }
-    for(int j = _prepro.size(); j >= 1; j--){
-        if(_prepro[j - 1] == -1){
-            _prepro[j - 1] = _prepro[j];
-        }
-    }
-    for(int & k : _prepro){
-        if(k == -1){
-            k = _cantActividades;
-        }
+    //Ahora, queremos tener cual es la inmediata actividad que arranca despues. Entonces, relleamos con el primer elemento de los vectores del vector de vectores
+    //anterior, que, por como lo construimos, tiene la proxima actividad que empieza despues de cada hora
+    for (int i = 0; i < _actDespues.size(); i++)
+    {
+        _actDespues[i] = _comienzoAct[_actividades[i].second + 1][0];
     }
 }
 
@@ -87,124 +72,99 @@ return _nombreDelArchivo;
 }
 
 int Schedule::solver_td() const {
-return top_down(0);
+    return top_down(0);
 }
 
 int Schedule::solver_bu() const {
-return bottom_up();
+    return bottom_up();
 }
 
 int Schedule::top_down(int i) const {
-    if (i >= _cantActividades) { return 0; }
-    if (_memo[i] == -1) {
-        _memo[i] = max(_beneficios[i] + top_down(_prepro[_actividades[i].second + 1]), top_down(i + 1));
+    if (i == _cantActividades) return 0;
+    else
+    {
+        if (M[i] == 0)
+        {
+            //Si no se calculó el beneficio hasta la siguiente actividad lo calculo, y sinó lo uso. Y lo compara con el beneficio de la
+            //actividad actual con el llamado recursivo del conjunto de actividades que arrancan despues de que esta termina
+            M[i] = max(M[i+1] == 0 ? top_down(i+1) : M[i+1], _beneficios[i] + top_down(_actDespues[i]));
+        }
     }
-    return _memo[i];
+    return M[i];
 }
-            /*if (_memo[i] == -1) {
-                if (i == _cantActividades) {
-                    _memo[i] = 0;
-                } else {
-                    if (_actividades[i].second + 1 >= 2 * _cantActividades) {
-                        _memo[i] = max(_beneficios[i], top_down(i + 1));
-                    } else {
-                        _memo[i] = max(_beneficios[i] + top_down(_prepro[_actividades[i].second + 1]), top_down(i + 1));
-                    }
-                }
-            }
-    return _memo[i];
-}*/
-    /*if(i < _prepro.size()){
-        if(_memo[i] == 0){
-            if(_prepro[i].empty()){
-                _memo[i] = top_down(i + 1);
-            } else{
-                int maximo = 0;
-                for(int j = 0; j < _prepro[i].size(); j++){
-                    int m = max(top_down(i+1), _beneficios[_prepro[i][j]] + top_down(_actividades[_prepro[i][j]].second + 1));
-                    maximo = max(maximo, m);
-                }
-                _memo[i] = maximo;
-            }
-        }
-    } else{
-        _memo[_cantActividades] = 0;
-        return _memo[i - 1];
-    }
-    return _memo[i];*/
-    /*if(i == _cantActividades) {
-        _memo[_actividades[i - 1].second] = 0;
-        return _memo[_actividades[i - 1].second];
-    }
-    if(_memo[_actividades[i].first] == 0){
-            int t_i = _actividades[i].second + 1;
-            int j = i + 1;
-            while(j < _cantActividades && t_i > _actividades[j].first){
-                j++;
-            }
-            int maximo = 0;
-            for(int k = j; k < _cantActividades; k++){
-                maximo = max(maximo, top_down(k));
-            }
-            _memo[_actividades[i].first] = max(_beneficios[i] + maximo, top_down(i + 1));
-        /*int prox_sin_col = _noColisiones_td[i];
-        while(prox_sin_col != _cantActividades){
-            if(_actividades[i].second <= _actividades[prox_sin_col].first){
-                break;
-            }
-            prox_sin_col++;
-        }
-        _memo[i] = max(_beneficios[i] + top_down(prox_sin_col), top_down(i + 1));
-        }
-    return _memo[_actividades[i].first];*/
 
 int Schedule::bottom_up() const {
-    vector<int> M(2*_cantActividades+1, 0);
-    /*vector<int> M(_cantActividades, 0);
-    M[0] = _beneficios[0];
-    for(int j = 1; j < _cantActividades; j++){
-        if(_actividades[j].first > _actividades[j-1].second){
-            M[j] = M[j-1] + _beneficios[j];
-        } else{
-            int idx = _noColisiones_bu[j];
-            int ant_sin_col;
-            if(idx != -1){
-                ant_sin_col = M[idx];
-            } else{
-                ant_sin_col = 0;
-            }
-            M[j] = _beneficios[j] + ant_sin_col;
-        }
+    M[_cantActividades] = 0;
+    for (int i = _cantActividades-1; i >=1; i--)
+    {   
+        //M[i] almacena el beneficio maximo entre la actividad i y la n-1
+        //Luego, para completarlo, tomamos el maximo entre no meter a la actividad (M[i+1]) o meterla y sumar el 
+        //maximo del conjunto de actividades que arrancan despues de ella
+        M[i] = max(M[_actDespues[i]] + _beneficios[i], M[i + 1]);
     }
-    return M[_cantActividades - 1];*/
-    int idx = _cantActividades - 1;
-    for (int i = M.size()-2; i >=0 ; i--)
-    {
-        if (idx >= 0)
-        {
-            if (i > _actividades[idx].first)
-            {
-                M[i] = M[i + 1];
-            }
-            else
-            {
-                while(idx >= 0 && _actividades[idx].first == i){
-                    int ag = 0;
-                    if(_actividades[idx].second != M.size() - 1){
-                        ag = M[_actividades[idx].second + 1];
-                    }
-                    M[i] = max(_beneficios[idx] + ag, max(M[i], M[i+1]));
-                    idx--;
-                }
-            }
-        }
-        else
-        {
-            M[i] = M[i + 1];
-        }
-    }
+    M[0] = max(M[_actDespues[0]] + _beneficios[0], M[0 + 1]);
     return M[0];
 }
 
-vector<pair<int, int>> Schedule::reconstruir() const {
+vector<int> Schedule::reconstruir()
+{
+    vector<int> v;
+    int i = 0;
+    //La idea es la siguiente. 
+    //Como para M[i] vamos acumulando el beneficio máximo entre las actividades i y n-1
+    //y todas las actividades tienen beneficio mayor a 0, entonces si M[i] es mayor que M[i+1] significa que insertamos a la actividad i
+    //Luego, saltamos a la casilla de la primera actividad que se puede realizar despues de que termine la actividad i y seguimos la misma lógica
+    //Tanto en td como bu vamos a llenar todas las casiillas porque en cada actividad llamamos a la siguiente
+    while(i < _cantActividades)
+    {
+        while (i < _cantActividades && M[i] == M[i + 1])
+        {
+            i++;
+        }
+        v.push_back(i);
+        i = _actDespues[i];
+    }
+    return v;
+}
+
+
+//Verifica si el fin de una actividad es antes del comienzo de otra
+vector<int> Schedule::verificador(vector<int> &w)
+{
+    vector<int> v;
+    for (int i = 0; i < w.size(); i++)
+    {
+        for (int j = i+1; j < w.size(); j++)
+        {
+            if (_actividades[w[i]].second >= _actividades[w[j]].first)
+            {
+                v.push_back(w[i]);
+                break;
+            }
+        }
+    }
+    return v;
+}
+
+
+//Reconstruye una matriz con el comienzo, fin y beneficio, y el acumulado de los beneficios de un vector con el indice de las actividades
+vector<vector<int>> Schedule::solu(vector<int> &w)
+{
+    vector<vector<int>> v;
+    vector<int> k;
+    k.push_back(_actividades[w[0]].first);
+    k.push_back(_actividades[w[0]].second);
+    k.push_back(_beneficios[w[0]]);
+    k.push_back(_beneficios[w[0]]);
+    v.push_back(k);
+    for (int i = 1; i < w.size(); i++)
+    {
+        vector<int> k;
+        k.push_back(_actividades[w[i]].first);
+        k.push_back(_actividades[w[i]].second);
+        k.push_back(_beneficios[w[i]]);
+        k.push_back(v[i - 1][3] + _beneficios[w[i]]);
+        v.push_back(k);
+    }
+    return v;
 }

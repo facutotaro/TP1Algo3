@@ -18,12 +18,22 @@ public:
 
     int solver_bu() const;
 
-    vector<pair<int, int>> reconstruir() const;
-
 	string nombre() const;
+
+    vector<int> reconstruir();
+
+    vector<int> verificador(vector<int>& w);
+
+    vector<vector<int>> solu(vector<int> &w);
 private:
 
-	string _nombreDelArchivo;
+    int top_down(int i) const;
+
+    int bottom_up() const;
+
+    string _nombreDelArchivo;
+
+    mutable vector<int> M;
 
     vector<pair<int, int>> _actividades;
 
@@ -31,19 +41,10 @@ private:
 
     int _cantActividades;
 
-    //vector<int> _noColisiones_td;
+    vector<vector<int>> _comienzoAct;
 
-    //vector<int> _noColisiones_bu;
-
-    mutable vector<int> _prepro;
-
-    //mutable vector<int> _memo;
-
-    mutable vector<int> _memo;
-
-    int top_down(int i) const;
-
-    int bottom_up() const;
+    vector<int> _actDespues;
+	
 };
 
 #endif // !SCHEDULE
