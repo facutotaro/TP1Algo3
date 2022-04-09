@@ -99,14 +99,15 @@ void RedSocial::solver() {
     // Falta ver caso donde hay populares.
     cliqueMasInfluyente(vacio, actores());
     cout << "[";
-    for (int i=0 ; i < res.size(); i++) {
-        cout << res[i].id << ", ";
+    for (auto & re : res) {
+        cout << re.id << ", ";
     }
-    cout << "]";
+    cout << "]" << endl;
+    cout << influenciaDeGrupo(res) << endl;
 }
 
 void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){
-    if(K.size()==0){
+    if(K.empty()){
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
             res = Q;
@@ -162,7 +163,7 @@ void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) 
 
 vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const{
     vector<Actor> cliqueActual;
-    while (grupo.size() > 0){
+    while (!grupo.empty()){
         cliqueActual.push_back(masPopular(grupo));
         soloAmigosDeQEnK(cliqueActual, grupo);
     }
@@ -198,8 +199,8 @@ Actor RedSocial::masPopular(vector<Actor> grupo) const{
 
     for (int j = 0; j < grupo.size(); ++j) {
         int cantAmigos = 0;
-        for (int k = 0; k < _matrizDeAmistades[j].size(); ++k) {
-            cantAmigos += _matrizDeAmistades[j][k];
+        for (bool k : _matrizDeAmistades[j]) {
+            cantAmigos += k;
         }
         if (cantAmigos > cantAmigosMax) {
             cantAmigosMax = cantAmigos;
