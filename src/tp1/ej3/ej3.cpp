@@ -16,7 +16,8 @@ Schedule::Schedule(std::string s)
 
         _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
         _beneficios = vector<int>(_cantActividades, 0);
-        _memo = vector<int>(2*_cantActividades, 0);
+        _memo = vector<int>(_cantActividades, -1);
+        _prepro = vector<int>(2*_cantActividades + 2, -1);
 
         /*_noColisiones_td = vector<int>(_cantActividades, 0);
         _noColisiones_bu = vector<int>(_cantActividades, _cantActividades);
@@ -58,6 +59,21 @@ Schedule::Schedule(std::string s)
         _noColisiones_bu[j] = ant_sin_col;
     }
     */
+    for(int i = 0; i < _cantActividades; i++){
+        if(_prepro[_actividades[i].first] == -1){
+            _prepro[_actividades[i].first] = i;
+        }
+    }
+    for(int j = _prepro.size(); j >= 1; j--){
+        if(_prepro[j - 1] == -1){
+            _prepro[j - 1] = _prepro[j];
+        }
+    }
+    for(int & k : _prepro){
+        if(k == -1){
+            k = _cantActividades;
+        }
+    }
 }
 
 Schedule::~Schedule()
@@ -79,7 +95,44 @@ return bottom_up();
 }
 
 int Schedule::top_down(int i) const {
-    if(i == _cantActividades) {
+    if (i >= _cantActividades) { return 0; }
+    if (_memo[i] == -1) {
+        _memo[i] = max(_beneficios[i] + top_down(_prepro[_actividades[i].second + 1]), top_down(i + 1));
+    }
+    return _memo[i];
+}
+            /*if (_memo[i] == -1) {
+                if (i == _cantActividades) {
+                    _memo[i] = 0;
+                } else {
+                    if (_actividades[i].second + 1 >= 2 * _cantActividades) {
+                        _memo[i] = max(_beneficios[i], top_down(i + 1));
+                    } else {
+                        _memo[i] = max(_beneficios[i] + top_down(_prepro[_actividades[i].second + 1]), top_down(i + 1));
+                    }
+                }
+            }
+    return _memo[i];
+}*/
+    /*if(i < _prepro.size()){
+        if(_memo[i] == 0){
+            if(_prepro[i].empty()){
+                _memo[i] = top_down(i + 1);
+            } else{
+                int maximo = 0;
+                for(int j = 0; j < _prepro[i].size(); j++){
+                    int m = max(top_down(i+1), _beneficios[_prepro[i][j]] + top_down(_actividades[_prepro[i][j]].second + 1));
+                    maximo = max(maximo, m);
+                }
+                _memo[i] = maximo;
+            }
+        }
+    } else{
+        _memo[_cantActividades] = 0;
+        return _memo[i - 1];
+    }
+    return _memo[i];*/
+    /*if(i == _cantActividades) {
         _memo[_actividades[i - 1].second] = 0;
         return _memo[_actividades[i - 1].second];
     }
@@ -101,10 +154,9 @@ int Schedule::top_down(int i) const {
             }
             prox_sin_col++;
         }
-        _memo[i] = max(_beneficios[i] + top_down(prox_sin_col), top_down(i + 1));*/
+        _memo[i] = max(_beneficios[i] + top_down(prox_sin_col), top_down(i + 1));
         }
-    return _memo[_actividades[i].first];
-}
+    return _memo[_actividades[i].first];*/
 
 int Schedule::bottom_up() const {
     vector<int> M(2*_cantActividades+1, 0);
@@ -136,12 +188,14 @@ int Schedule::bottom_up() const {
             }
             else
             {
-                int ag = 0;
-                if(_actividades[idx].second != M.size() - 1){
-                    ag = M[_actividades[idx].second + 1];
+                while(idx >= 0 && _actividades[idx].first == i){
+                    int ag = 0;
+                    if(_actividades[idx].second != M.size() - 1){
+                        ag = M[_actividades[idx].second + 1];
+                    }
+                    M[i] = max(_beneficios[idx] + ag, max(M[i], M[i+1]));
+                    idx--;
                 }
-                M[i] = max(_beneficios[idx] + ag, max(M[i], M[i+1]));
-                idx--;
             }
         }
         else

@@ -35,6 +35,10 @@ private:
 
     //vector<int> _noColisiones_bu;
 
+    mutable vector<int> _prepro;
+
+    //mutable vector<int> _memo;
+
     mutable vector<int> _memo;
 
     int top_down(int i) const;
