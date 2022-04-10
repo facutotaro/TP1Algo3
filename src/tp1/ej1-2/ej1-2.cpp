@@ -141,7 +141,25 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
 }
 
 void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo.
-    for(Actor u : K){
+    int i = K.size()-1;
+    int contador = 0;
+    while (i >= contador) {
+        bool esAmigoDeTodos = true;
+        for (Actor v : Q) {
+            esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, K[i]);
+        }
+        if (esAmigoDeTodos) {
+            Actor temp = K[contador];
+            K[contador] = K[i];
+            K[i] = temp;
+            contador++;
+        } else {
+            K.pop_back();
+            i--;
+        }
+    }
+
+    /*for(Actor u : K){
         bool esAmigoDeTodos = true;
         for(Actor v : Q){
             esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, u);
@@ -150,7 +168,7 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
             auto posicion = find(K.begin(), K.end(), u);
             K.erase(posicion);
         }
-    }
+    }*/
 }
 
 
