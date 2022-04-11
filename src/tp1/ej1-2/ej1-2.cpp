@@ -46,11 +46,15 @@ RedSocial::RedSocial(std::string s) {
         });
 
         _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0));
+        // Creo que deberiamos tener una listaDeAdyacencia para saber rapido el grado de un nodo.
+
 
         for(auto & a : _amistades){
             _matrizDeAmistades[a.first][a.second] = true;
             _matrizDeAmistades[a.second][a.first] = true;
         }
+
+
 
        solver();
 
@@ -121,7 +125,7 @@ void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){ // Me hac
             vector<Actor> viejoK = K;
             Q.push_back(K[i]);
             soloAmigosDeQEnK(Q, K);
-            agregarCliqueMasGrandeDeKAQ(Q, K);
+            agregarCliqueMasGrandeDeKAQ(Q, K); 
             cliqueMasInfluyente(Q, K);
 
             Q = viejoQ;
@@ -183,11 +187,12 @@ void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) 
 vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const {
     vector<Actor> cliqueActual;
     while (!grupo.empty()) {
-        cliqueActual.push_back(masPopular(grupo));
+        cliqueActual.push_back(masPopular(grupo)); // Me parece que el cliqueMasGrande no necesariamente contiene al masPopular.
         soloAmigosDeQEnK(cliqueActual, grupo);
     }
     return cliqueActual;
 }
+
     /*vector<Actor> cliqueMasGrande;
     vector<Actor> cliqueActual;
     int cliqueActualSize = 0;
@@ -244,13 +249,4 @@ bool RedSocial::estaEnGrupo(int id, const vector<Actor>& grupo) const {
     Actor temp(id, 0);
     return grupo.end() != find(grupo.begin(), grupo.end(), temp);
 }
-
-
-
-
-
-
-
-
-
 

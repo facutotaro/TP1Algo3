@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <list>
 
 using namespace std;
 
@@ -50,14 +51,15 @@ public:
 
     bool estaEnGrupo(int id, const vector<Actor>& grupo) const;
 
-	void solver();
+    bool esClique(vector<Actor> C, int b);
+
+    void solver();
 
 private:
 	string _nombreDelArchivo;
 	vector<Actor> _actores;
 	vector<pair<int, int>> _amistades;
 	vector<vector<bool>> _matrizDeAmistades;
-
 
 };
 
