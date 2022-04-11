@@ -41,17 +41,11 @@ public:
 
 	void agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const;
 
-	vector<Actor> cliqueMasGrande(vector<Actor> grupo) const;
-
-	Actor masPopular(vector<Actor> grupo) const;
-
 	vector<vector<bool>> matrizDeAmistades();
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-    bool estaEnGrupo(int id, const vector<Actor>& grupo) const;
-
-    bool esClique(vector<Actor> C, int b);
+    bool esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const;
 
     void solver();
 

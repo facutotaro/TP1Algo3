@@ -54,8 +54,6 @@ RedSocial::RedSocial(std::string s) {
             _matrizDeAmistades[a.second][a.first] = true;
         }
 
-
-
        solver();
 
     }
@@ -91,8 +89,6 @@ bool Actor::operator==(Actor v) const {
     return this->id == v.id;
 }
 
-
-
 // Variables Globales:
 int influenciaMaximaVista = -1;
 vector<Actor> res;
@@ -117,7 +113,7 @@ void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){ // Me hac
             res = Q;
         }
     }
-    if (i < actores().size()){
+    if (i < K.size()){ // Cambio esto porque sino daba Seg Fault, antes era i < actores().size()
         if (influenciaDeGrupo(Q)+influenciaDeGrupo(K) <= influenciaMaximaVista){
             return;
         } else {
@@ -125,13 +121,10 @@ void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){ // Me hac
             vector<Actor> viejoK = K;
             Q.push_back(K[i]);
             soloAmigosDeQEnK(Q, K);
-            agregarCliqueMasGrandeDeKAQ(Q, K); 
+            agregarCliqueMasGrandeDeKAQ(Q, K);
             cliqueMasInfluyente(Q, K);
-
-            Q = viejoQ;
-            K = viejoK;
             i++;
-            cliqueMasInfluyente(Q, K);
+            cliqueMasInfluyente(viejoQ, viejoK);
         }
     }
 }
@@ -162,91 +155,29 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
             j--;
         }
     }
-
-    /*for(Actor u : K){
-        bool esAmigoDeTodos = true;
-        for(Actor v : Q){
-            esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, u);
-        }
-        if (!esAmigoDeTodos){ // Sera eficiente?
-            auto posicion = find(K.begin(), K.end(), u);
-            K.erase(posicion);
-        }
-    }*/
 }
-
 
 void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ // No faltaria sacar los valores de K que metimos en Q?
-    vector<Actor> clique = cliqueMasGrande(K);
-    for(Actor v : clique){
-        Q.push_back(v);
-       // K.erase(remove(begin(K), end(K), v), end(K));
+    for(Actor v : K) {
+        if (esAmigoDeTodos(v, K)) {
+            Q.push_back(v);
+            K.erase(remove(K.begin(), K.end(), v), K.end());
+        }
     }
 }
 
-vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const {
-    vector<Actor> cliqueActual;
-    while (!grupo.empty()) {
-        cliqueActual.push_back(masPopular(grupo)); // Me parece que el cliqueMasGrande no necesariamente contiene al masPopular.
-        soloAmigosDeQEnK(cliqueActual, grupo);
+bool RedSocial::esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const {
+    bool esAmigoDeTodos = true;
+    for(int j = 0; esAmigoDeTodos && j < grupo.size(); j++){
+        if (!(grupo[j] == a))
+            esAmigoDeTodos = sonAmigos(a, grupo[j]) && esAmigoDeTodos;
     }
-    return cliqueActual;
-}
-
-    /*vector<Actor> cliqueMasGrande;
-    vector<Actor> cliqueActual;
-    int cliqueActualSize = 0;
-    for(int r = 0; r < grupo.size(); r++){
-        cliqueActual.push_back(grupo[r]);
-        cliqueActualSize++;
-        for(int j = 0; j < cliqueActualSize; j++){
-            for(int k = 0; k < grupo.size(); k++){
-                if(sonAmigos(cliqueActual[j], grupo[k])){
-                    cliqueActual.push_back(grupo[k]);
-                    cliqueActualSize++;
-                }
-            }
-        }
-        if (cliqueActual.size() > cliqueMasGrande.size()){
-            cliqueMasGrande = cliqueActual;
-        }
-        while (0 < cliqueActual.size()){
-            cliqueActual.pop_back();
-        }
-    }
-    return cliqueMasGrande;*/
-
-Actor RedSocial::masPopular(vector<Actor> grupo) const { // No nos interesa el mas popular de ESE grupo?
-    // No deberiamos preguntar si el elemento ademas de ser amigo del popular actual tambien esta en el grupo?
-    int cantAmigosMax = 0;
-    Actor popular(0, 0);
-
-    for (int j = 0; j < grupo.size(); ++j) {
-        int cantAmigos = 0;
-
-        for(int k = 1; k < _matrizDeAmistades[j].size(); k++) {
-            if( _matrizDeAmistades[j][k] && estaEnGrupo(k, grupo))
-                cantAmigos++;
-       }
-        /*
-        for (bool k: _matrizDeAmistades[j]) {
-            cantAmigos += k;
-        }
-        */
-        if (cantAmigos > cantAmigosMax) {
-            cantAmigosMax = cantAmigos;
-            popular = grupo[j];
-        }
-    }
-    return popular;
+    return esAmigoDeTodos;
 }
 
 bool RedSocial::sonAmigos(Actor v, Actor u) const{
     return _matrizDeAmistades[v.id][u.id];
 }
 
-bool RedSocial::estaEnGrupo(int id, const vector<Actor>& grupo) const {
-    Actor temp(id, 0);
-    return grupo.end() != find(grupo.begin(), grupo.end(), temp);
-}
+
 

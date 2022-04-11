@@ -1,0 +1,76 @@
+agregarCliqueMasGrandeDeKAQ:
+vector<Actor> cliqueActual;
+    while (!grupo.empty()) {
+        cliqueActual.push_back(masPopular(grupo)); // Me parece que el cliqueMasGrande no necesariamente contiene al masPopular.
+        soloAmigosDeQEnK(cliqueActual, grupo);
+    }
+    return cliqueActual;
+}
+
+vector<Actor> cliqueMasGrande;
+    vector<Actor> cliqueActual;
+    int cliqueActualSize = 0;
+    for(int r = 0; r < grupo.size(); r++){
+        cliqueActual.push_back(grupo[r]);
+        cliqueActualSize++;
+        for(int j = 0; j < cliqueActualSize; j++){
+            for(int k = 0; k < grupo.size(); k++){
+                if(sonAmigos(cliqueActual[j], grupo[k])){
+                    cliqueActual.push_back(grupo[k]);
+                    cliqueActualSize++;
+                }
+            }
+        }
+        if (cliqueActual.size() > cliqueMasGrande.size()){
+            cliqueMasGrande = cliqueActual;
+        }
+        while (0 < cliqueActual.size()){
+            cliqueActual.pop_back();
+        }
+    }
+    return cliqueMasGrande;
+
+
+soloAmigosDeQEnK:
+for(Actor u : K){
+        bool esAmigoDeTodos = true;
+        for(Actor v : Q){
+            esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, u);
+        }
+        if (!esAmigoDeTodos){ // Sera eficiente?
+            auto posicion = find(K.begin(), K.end(), u);
+            K.erase(posicion);
+        }
+    }
+
+Actor masPopular(vector<Actor> grupo) const;
+Actor RedSocial::masPopular(vector<Actor> grupo) const { // No nos interesa el mas popular de ESE grupo?
+    // No deberiamos preguntar si el elemento ademas de ser amigo del popular actual tambien esta en el grupo?
+    int cantAmigosMax = 0;
+    Actor popular(0, 0);
+
+    for (int j = 0; j < grupo.size(); ++j) {
+        int cantAmigos = 0;
+
+        for(int k = 1; k < _matrizDeAmistades[j].size(); k++) {
+            if( _matrizDeAmistades[j][k] && estaEnGrupo(k, grupo))
+                cantAmigos++;
+       }
+        /*
+        for (bool k: _matrizDeAmistades[j]) {
+            cantAmigos += k;
+        }
+        */
+        if (cantAmigos > cantAmigosMax) {
+            cantAmigosMax = cantAmigos;
+            popular = grupo[j];
+        }
+    }
+    return popular;
+}
+
+bool estaEnGrupo(int id, const vector<Actor>& grupo) const;
+bool RedSocial::estaEnGrupo(int id, const vector<Actor>& grupo) const {
+    Actor temp(id, 0);
+    return grupo.end() != find(grupo.begin(), grupo.end(), temp);
+}
