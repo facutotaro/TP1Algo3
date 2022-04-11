@@ -48,6 +48,8 @@ public:
 
 	bool sonAmigos(Actor v, Actor u) const;
 
+    bool estaEnGrupo(int id, const vector<Actor>& grupo) const;
+
 	void solver();
 
 private:

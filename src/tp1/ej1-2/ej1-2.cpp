@@ -47,9 +47,9 @@ RedSocial::RedSocial(std::string s) {
 
         _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0));
 
-        for(int i = 0; i < _amistades.size(); i++){
-            _matrizDeAmistades[(_amistades[i]).first][(_amistades[i]).second] = true;
-            _matrizDeAmistades[(_amistades[i]).second][(_amistades[i]).first] = true;
+        for(auto & a : _amistades){
+            _matrizDeAmistades[a.first][a.second] = true;
+            _matrizDeAmistades[a.second][a.first] = true;
         }
 
        solver();
@@ -106,7 +106,7 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){
+void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K){ // Me hace ruido la variable global i.
     if(K.empty()){
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
@@ -141,21 +141,21 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
 }
 
 void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo.
-    int i = K.size()-1;
+    int j = K.size()-1;
     int contador = 0;
-    while (i >= contador) {
+    while (j >= contador) {
         bool esAmigoDeTodos = true;
         for (Actor v : Q) {
-            esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, K[i]);
+            esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, K[j]);
         }
         if (esAmigoDeTodos) {
             Actor temp = K[contador];
-            K[contador] = K[i];
-            K[i] = temp;
+            K[contador] = K[j];
+            K[j] = temp;
             contador++;
         } else {
             K.pop_back();
-            i--;
+            j--;
         }
     }
 
@@ -172,21 +172,22 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
 }
 
 
-void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ // No faltaria sacar los valores de K que metimos en Q?
     vector<Actor> clique = cliqueMasGrande(K);
     for(Actor v : clique){
         Q.push_back(v);
+       // K.erase(remove(begin(K), end(K), v), end(K));
     }
 }
 
-vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const{
+vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const {
     vector<Actor> cliqueActual;
-    while (!grupo.empty()){
+    while (!grupo.empty()) {
         cliqueActual.push_back(masPopular(grupo));
         soloAmigosDeQEnK(cliqueActual, grupo);
     }
     return cliqueActual;
-
+}
     /*vector<Actor> cliqueMasGrande;
     vector<Actor> cliqueActual;
     int cliqueActualSize = 0;
@@ -209,17 +210,24 @@ vector<Actor> RedSocial::cliqueMasGrande(vector<Actor> grupo) const{
         }
     }
     return cliqueMasGrande;*/
-}
 
-Actor RedSocial::masPopular(vector<Actor> grupo) const{
+Actor RedSocial::masPopular(vector<Actor> grupo) const { // No nos interesa el mas popular de ESE grupo?
+    // No deberiamos preguntar si el elemento ademas de ser amigo del popular actual tambien esta en el grupo?
     int cantAmigosMax = 0;
-    Actor popular(0,0);
+    Actor popular(0, 0);
 
     for (int j = 0; j < grupo.size(); ++j) {
         int cantAmigos = 0;
-        for (bool k : _matrizDeAmistades[j]) {
+
+        for(int k = 1; k < _matrizDeAmistades[j].size(); k++) {
+            if( _matrizDeAmistades[j][k] && estaEnGrupo(k, grupo))
+                cantAmigos++;
+       }
+        /*
+        for (bool k: _matrizDeAmistades[j]) {
             cantAmigos += k;
         }
+        */
         if (cantAmigos > cantAmigosMax) {
             cantAmigosMax = cantAmigos;
             popular = grupo[j];
@@ -231,6 +239,13 @@ Actor RedSocial::masPopular(vector<Actor> grupo) const{
 bool RedSocial::sonAmigos(Actor v, Actor u) const{
     return _matrizDeAmistades[v.id][u.id];
 }
+
+bool RedSocial::estaEnGrupo(int id, const vector<Actor>& grupo) const {
+    Actor temp(id, 0);
+    return grupo.end() != find(grupo.begin(), grupo.end(), temp);
+}
+
+
 
 
 
