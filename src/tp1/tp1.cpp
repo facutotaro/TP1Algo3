@@ -39,6 +39,24 @@ int main()
 	{
 		Schedule s(nombre);
 		nombreArchivo = s.nombre();
+		cout << "El maximo beneficio es" << s.solver_bu() << endl;
+		vector<int> solu = s.reconstruir();
+		vector<int> veri = s.verificador(solu);
+		vector<vector<int>> sol = s.solu(solu);
+		for (int i = 0; i < sol.size(); i++)
+		{
+			cout << solu[i] << "; ";
+			for (int j = 0; j < 4; j++)
+			{
+				cout << sol[i][j] << "; ";
+			}
+			cout << endl;
+		}
+		for (int i = 0; i < solu.size(); i++)
+		{
+			cout << solu[i] << ", ";
+		}
+		veri.size() == 0 ? cout << "Esta bien" << endl : cout << "Esta mal" << endl;
 		break;
 	}
 	case 4:

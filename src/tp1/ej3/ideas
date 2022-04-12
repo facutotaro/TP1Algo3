@@ -1,0 +1,37 @@
+i: N
+b(i) = {
+	- 0 	si i = n
+	- max(B_i + b(siguienteQueNoColisiona(i + 1, t_i)), b(i + 1)) cc
+}
+
+maximo(agrego esta y veo colisiones en la próxima, ignoro esta y agrego las siguientes)
+
+Tenemos 2^n llamadas recursivas. Como i pertenece a {0, ..., n}, tenemos (n + 1) posibles valores de i y como t pertenecea a {1, ..., 2n} tenemos 2n posibles valores de t, entonces en total la cantidad de subproblemas que vamos a tener es de 2n*(n + 1) = 2n² + 2n queremos probar que 2n² + 2n es O(2^n).
+
+Queremos encontrar un c in R>0 y un n_0 in N | 2n² + 2n <= c*2^n, probando esta desigualdad por el límite podemos ver que:
+
+lim(n -> inf) (2n² + 2n) / (2^n) = lim(n -> inf) (4n + 2) / ln(2)*2^n = 
+lim(n -> inf) 4 / ln(2)² * 2^n = 0, por lo tanto 2n² + 2n pertenece a O(2^n). Llegamos a la conclusión de que 2n² + 2n < < < < < 2^n, hay superposición de problemas.
+
+
+i: N
+b(i) = {
+	- 0		si i = n
+	- max(b(i + 1), max_c i < c < n land s_c > t_i (b(c)) + B_i)
+}
+
+
+vector(2n) tiempos de comienzo.
+Para llenarlo necesitamos el maximo beneficio de todas las actividades que comienzan cuando termina la actividad i.
+
+td = td(0) es solución óptima. En el casillero s_i va el máximo de td(i + 1) y el maximo td(j) tal que i < j < n, esto ya calcula los casilleros en el array así que técnicamente la cantidad de operaciones va a ser 2n en total, pese a llamadas recursivas.
+
+
+
+i: N
+b(i) = {
+	- 0 	si i = n
+	- max(B_i + b(siguienteQueNoColisiona(i + 1, t_i)), b(i + 1)) cc
+}
+
+Idea: Saber de antemano cuál es el siguiente i con el que no hay colisión. Para esto se puede construir un vector en el constructor. Ir a buscar al array el i correspondiente.
