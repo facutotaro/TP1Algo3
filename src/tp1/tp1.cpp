@@ -45,11 +45,16 @@ int main()
 		vector<vector<int>> sol = s.solu(solu);
 		for (int i = 0; i < sol.size(); i++)
 		{
+			cout << solu[i] << "; ";
 			for (int j = 0; j < 4; j++)
 			{
 				cout << sol[i][j] << "; ";
 			}
 			cout << endl;
+		}
+		for (int i = 0; i < solu.size(); i++)
+		{
+			cout << solu[i] << ", ";
 		}
 		veri.size() == 0 ? cout << "Esta bien" << endl : cout << "Esta mal" << endl;
 		break;
