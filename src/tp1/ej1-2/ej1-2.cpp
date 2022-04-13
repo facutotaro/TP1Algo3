@@ -43,7 +43,7 @@ RedSocial::RedSocial(std::string s) {
         // Ordenarlo para agarrar el de mas influencia primero. La influencia max vista probablemente esta al principio lo que facilita podas.
 
         sort(_actores.begin(),_actores.end(), [](Actor v, Actor u){
-            return v.influencia > u.influencia;
+            return v.id < u.id;
         });
 
         _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0));
@@ -97,7 +97,8 @@ vector<Actor> res;
 void RedSocial::solver() {
     vector<Actor> vacio;
     // Falta ver caso donde hay populares.
-    cliqueMasInfluyente(vacio, _actores);
+    vector<Actor> V = _actores;
+    cliqueMasInfluyente(vacio, V, 0);
     cout << "[";
     for (auto & re : res) {
         cout << re.id << ", ";
@@ -106,27 +107,30 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ // Me hace ruido la variable global i.
+void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int i) const{ // Me hace ruido la variable global i.
     if(K.empty()){
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
             res = Q;
         }
     }
-    if (influenciaDeGrupo(Q)+influenciaDeGrupo(K) <= influenciaMaximaVista){
-        return;
-    } else {
+    if(i < actores().size()) {
+        if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) {
+            return;
+        } else {
             vector<Actor> viejoQ = Q;
             vector<Actor> viejoK = K;
 
-            Q.push_back(K[K.size()-1]);
+            Q.push_back(K[0]);
             soloAmigosDeQEnK(Q, K); // Me quedo solo con todos los amigos de Q en K.
             agregarCliqueMasGrandeDeKAQ(Q, K); // Busco todos los que no tienen no amigos y los agrego a Q.
-            cliqueMasInfluyente(Q, K);
+            i++;
+            cliqueMasInfluyente(Q, K, i);
 
             // Q.erase(remove(Q.begin(), Q.end(), actores()[i-1]), Q.end());
-            cliqueMasInfluyente(viejoQ, viejoK);
+            cliqueMasInfluyente(viejoQ, viejoK, i);
         }
+    }
 }
 
 int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
