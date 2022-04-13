@@ -98,7 +98,7 @@ void RedSocial::solver() {
     vector<Actor> vacio;
     // Falta ver caso donde hay populares.
     vector<Actor> V = _actores;
-    cliqueMasInfluyente(vacio, V, 0);
+    cliqueMasInfluyente(vacio, V);
     cout << "[";
     for (auto & re : res) {
         cout << re.id << ", ";
@@ -107,28 +107,30 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int i) const{ // Me hace ruido la variable global i.
+void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ // Me hace ruido la variable global i.
     if(K.empty()){
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
             res = Q;
         }
-    }
-    if(i < actores().size()) {
+    } else {
         if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) {
             return;
         } else {
             vector<Actor> viejoQ = Q;
             vector<Actor> viejoK = K;
 
-            Q.push_back(K[0]);
+            Q.push_back(K[K.size()-1]);
             soloAmigosDeQEnK(Q, K); // Me quedo solo con todos los amigos de Q en K.
             agregarCliqueMasGrandeDeKAQ(Q, K); // Busco todos los que no tienen no amigos y los agrego a Q.
-            i++;
-            cliqueMasInfluyente(Q, K, i);
+            cliqueMasInfluyente(Q,K);
+            Q = viejoQ;
+            K = viejoK;
+            K.pop_back();
+            cliqueMasInfluyente(Q, K);
 
             // Q.erase(remove(Q.begin(), Q.end(), actores()[i-1]), Q.end());
-            cliqueMasInfluyente(viejoQ, viejoK, i);
+            //cliqueMasInfluyente(viejoQ, K);
         }
     }
 }
