@@ -33,7 +33,7 @@ public:
 
 	vector<pair<int,int>> amistades() const;
 
-	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const;
+	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K) const;
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
@@ -48,6 +48,8 @@ public:
     bool esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const;
 
     void solver();
+
+    void invariante(vector<Actor>& Q, vector<Actor>& K) const;
 
 private:
 	string _nombreDelArchivo;

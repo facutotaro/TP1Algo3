@@ -43,7 +43,7 @@ RedSocial::RedSocial(std::string s) {
         // Ordenarlo para agarrar el de mas influencia primero. La influencia max vista probablemente esta al principio lo que facilita podas.
 
         sort(_actores.begin(),_actores.end(), [](Actor v, Actor u){
-            return v.id < u.id;
+            return v.influencia < u.influencia;
         });
 
         _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0));
@@ -107,28 +107,32 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ // En terminos de memoria que onda???
-    if(K.empty()){
+void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K) const{
+    //invariante(Q, K); // Funcion para el debug
+    if(K.empty()){ // Caso Base
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
             res = Q;
         }
     } else {
-        if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) {
+        if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) { // Poda
             return;
         } else {
-            vector<Actor> viejoQ = Q;
-            vector<Actor> viejoK = K;
+            vector<Actor> Qd = Q;
+            vector<Actor> Kd = K;
 
+            // Caso meto a v.
             Q.push_back(K[K.size()-1]);
-            soloAmigosDeQEnK(Q, K); // Me quedo solo con todos los amigos de Q en K.
-            agregarCliqueMasGrandeDeKAQ(Q, K); // Busco todos los que no tienen no amigos y los agrego a Q.
+            K.pop_back();
+            // Mantengo el Invariante de K:
+            soloAmigosDeQEnK(Q, K); // INV 1: Me quedo solo con todos los amigos de Q en K.
+            agregarCliqueMasGrandeDeKAQ(Q, K); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
             cliqueMasInfluyente(Q,K);
-            K.pop_back(); // Tema aca es que podriamos estar popeando algo vacio. Pero agregar un if aca no sirve y corta toda la idea de la funcion.
-            cliqueMasInfluyente(Q, K);
 
-            // Q.erase(remove(Q.begin(), Q.end(), actores()[i-1]), Q.end());
-            //cliqueMasInfluyente(viejoQ, K);
+            // Caso NO meto a v.
+            Kd.pop_back();
+            agregarCliqueMasGrandeDeKAQ(Qd, Kd);// Chequiar si hay actores populares
+            cliqueMasInfluyente(Qd, Kd);
         }
     }
 }
@@ -161,13 +165,16 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
     }
 }
 
-void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ // No faltaria sacar los valores de K que metimos en Q?
-    for(Actor v : K) {
-        if (esAmigoDeTodos(v, K)) {
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ //
+    vector<Actor> noSonAmigosDeTodos;
+    for(Actor v : K) { // O(|K|)
+        if (esAmigoDeTodos(v, K)) { // O(|K|)
             Q.push_back(v);
-            K.erase(remove(K.begin(), K.end(), v), K.end());
+        }  else {
+            noSonAmigosDeTodos.push_back(v);
         }
     }
+    K = noSonAmigosDeTodos;
 }
 
 bool RedSocial::esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const {
@@ -182,6 +189,51 @@ bool RedSocial::esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const {
 bool RedSocial::sonAmigos(Actor v, Actor u) const{
     return _matrizDeAmistades[v.id][u.id];
 }
+
+void RedSocial::invariante(vector<Actor>& Q, vector<Actor>& K) const{
+    int type1 = 0; // LOS DEL CLIQUE NO SON AMIGOS
+    int type2 = 0; // LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K
+    int type3 = 0; // HAY POPULARES EN K
+    for (auto & q : Q)
+    {
+        for (auto & k : K) // Hay no amigos en Q.
+        {
+            if (!(q == k) && !_matrizDeAmistades[q.id][k.id]) {
+                type1++;
+
+            }
+        }
+        for (auto & k : K) // Hay no amigos de los de Q en K.
+        {
+            if (!_matrizDeAmistades[q.id][k.id]) {
+                type2++;
+            }
+        }
+    }
+    for (auto & k1 : K)
+    {
+        bool esPopular = true;
+        for (auto & k2 : K) // Hay populares en K.
+        {
+            if (!(k1 == k2) && _matrizDeAmistades[k1.id][k2.id]) {
+                esPopular = false;
+                break;
+            }
+        }
+        if (esPopular) {
+            type3++;
+
+        }
+    }
+    type1 = type1 / 2;
+    type2 = type2 / 2;
+    type3 = type3 / 2;
+    if (type1)cout << "LOS DEL CLIQUE NO SON AMIGOS(" << type1 << ")" << endl;
+    if (type2)cout << "LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K(" << type2 << ")" << endl;
+    if (type3)cout << "HAY POPULARES EN K(" << type3 << ")" << endl;
+}
+
+
 
 
 

@@ -5,8 +5,10 @@
 #include "ej1-2/ej1-2.h"
 #include "ej3/ej3.h"
 #include "ej4/ej4.h"
+#include<chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int main()
 {
@@ -25,8 +27,14 @@ int main()
 	{
 	case 1:
 	{
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
 		RedSocial r1(nombre);
 		nombreArchivo = r1.nombre();
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+        std::cout << "It took me " << time_span.count() << " seconds.";
+        std::cout << std::endl;
 		break;
 	}
 	case 2:
@@ -55,3 +63,7 @@ int main()
 	
 	return 0;
 }
+
+
+
+
