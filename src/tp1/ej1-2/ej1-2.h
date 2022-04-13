@@ -33,7 +33,7 @@ public:
 
 	vector<pair<int,int>> amistades() const;
 
-	void cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K, int i) const;
+	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const;
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
