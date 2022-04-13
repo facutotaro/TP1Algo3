@@ -107,7 +107,7 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ // Me hace ruido la variable global i.
+void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ // En terminos de memoria que onda???
     if(K.empty()){
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeGrupo(Q);
@@ -124,9 +124,7 @@ void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ /
             soloAmigosDeQEnK(Q, K); // Me quedo solo con todos los amigos de Q en K.
             agregarCliqueMasGrandeDeKAQ(Q, K); // Busco todos los que no tienen no amigos y los agrego a Q.
             cliqueMasInfluyente(Q,K);
-            Q = viejoQ;
-            K = viejoK;
-            K.pop_back();
+            K.pop_back(); // Tema aca es que podriamos estar popeando algo vacio. Pero agregar un if aca no sirve y corta toda la idea de la funcion.
             cliqueMasInfluyente(Q, K);
 
             // Q.erase(remove(Q.begin(), Q.end(), actores()[i-1]), Q.end());
