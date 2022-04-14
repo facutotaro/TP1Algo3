@@ -74,3 +74,35 @@ bool RedSocial::estaEnGrupo(int id, const vector<Actor>& grupo) const {
     Actor temp(id, 0);
     return grupo.end() != find(grupo.begin(), grupo.end(), temp);
 }
+
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{
+    vector<Actor> noSonAmigosDeTodos;
+    for(Actor v : K) { // O(|K|)
+        if (esAmigoDeTodos(v, K)) { // O(|K|)
+            Q.push_back(v);
+        }  else {
+            noSonAmigosDeTodos.push_back(v);
+        }
+    }
+    K = noSonAmigosDeTodos;
+}
+
+void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo.
+    int j = K.size()-1;                                                     // O(K*Q) = O(n2)
+    int contador = 0;
+    while (j >= contador) {
+        bool esAmigoDeTodos = true;
+        for (Actor v : Q) { // O(|Q|)
+            esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, K[j]);
+        }
+        if (esAmigoDeTodos) {
+            Actor temp = K[contador];
+            K[contador] = K[j];
+            K[j] = temp;
+            contador++;
+        } else {
+            K.pop_back();
+            j--;
+        }
+    }
+}

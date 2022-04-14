@@ -40,13 +40,13 @@ RedSocial::RedSocial(std::string s) {
             i++;
         }
 
-        // Ordenarlo para agarrar el de mas influencia primero. La influencia max vista probablemente esta al principio lo que facilita podas.
+        // Ordenarlo para agarrar el de mas influencia primero. La influencia max vista sera alta al principio, lo que facilita podas.
 
         sort(_actores.begin(),_actores.end(), [](Actor v, Actor u){
             return v.influencia < u.influencia;
         });
 
-        _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0));
+        _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0)); //O(actores*amistades)
         // Creo que deberiamos tener una listaDeAdyacencia para saber rapido el grado de un nodo.
 
 
@@ -97,7 +97,7 @@ vector<Actor> res;
 void RedSocial::solver() {
     vector<Actor> vacio;
     // Falta ver caso donde hay populares.
-    vector<Actor> V = _actores;
+    vector<Actor> V = _actores;  //O(n)
     cliqueMasInfluyente(vacio, V);
     cout << "[";
     for (auto & re : res) {
@@ -107,7 +107,7 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor> Q, vector<Actor> K) const{
+void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{
     //invariante(Q, K); // Funcion para el debug
     if(K.empty()){ // Caso Base
         if(influenciaDeGrupo(Q) > influenciaMaximaVista){
@@ -146,47 +146,42 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
 }
 
 void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo.
-    int j = K.size()-1;                                                     // O(K*Q) = O(n2)
-    int contador = 0;
-    while (j >= contador) {
+    int j = 0;
+    while (j < K.size()){
         bool esAmigoDeTodos = true;
         for (Actor v : Q) { // O(|Q|)
             esAmigoDeTodos = esAmigoDeTodos && sonAmigos(v, K[j]);
         }
-        if (esAmigoDeTodos) {
-            Actor temp = K[contador];
-            K[contador] = K[j];
-            K[j] = temp;
-            contador++;
-        } else {
+        if (!esAmigoDeTodos) {
+            K[j] = K[K.size()-1];
             K.pop_back();
-            j--;
+        } else {
+            j++;
         }
     }
 }
 
-void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ //
-    vector<Actor> noSonAmigosDeTodos;
-    for(Actor v : K) { // O(|K|)
-        if (esAmigoDeTodos(v, K)) { // O(|K|)
-            Q.push_back(v);
-        }  else {
-            noSonAmigosDeTodos.push_back(v);
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ //O(K)
+    vector<Actor> ref = K;
+    for (int i = 0; i < K.size(); ++i) {
+        if (esAmigoDeTodos(K[i], ref)){
+            Q.push_back(K[i]);
+            K[i] = K[K.size()-1];
+            K.pop_back();
         }
     }
-    K = noSonAmigosDeTodos;
 }
 
-bool RedSocial::esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const {
+bool RedSocial::esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const { //O(grupo)
     bool esAmigoDeTodos = true;
     for(int j = 0; esAmigoDeTodos && j < grupo.size(); j++){
         if (!(grupo[j] == a))
-            esAmigoDeTodos = sonAmigos(a, grupo[j]) && esAmigoDeTodos;
+            esAmigoDeTodos = sonAmigos(a, grupo[j]) && esAmigoDeTodos; //O(1)
     }
     return esAmigoDeTodos;
 }
 
-bool RedSocial::sonAmigos(Actor v, Actor u) const{
+bool RedSocial::sonAmigos(Actor v, Actor u) const{ //O(1)
     return _matrizDeAmistades[v.id][u.id];
 }
 
