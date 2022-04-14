@@ -8,7 +8,7 @@ Schedule::Schedule(std::string s)
     _nombreDelArchivo = std::move(s);
 
     ifstream my_file;
-    my_file.open("../../../ej3/instancias-3/instancias/" + _nombreDelArchivo + ".txt", ios::in);
+    my_file.open("../ej3/instancias-3/instancias/" + _nombreDelArchivo + ".txt", ios::in);
     if (!my_file) {
     }
     else {
