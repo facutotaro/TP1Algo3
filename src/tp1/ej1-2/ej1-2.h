@@ -33,13 +33,13 @@ public:
 
 	vector<pair<int,int>> amistades() const;
 
-	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const;
+	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int influenciaDeQ) const;
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
 	void soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const;
 
-	void agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const;
+	void agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K, int& influenciaDeQ) const;
 
 	vector<vector<bool>> matrizDeAmistades();
 

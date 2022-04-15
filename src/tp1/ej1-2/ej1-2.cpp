@@ -19,6 +19,7 @@ RedSocial::RedSocial(std::string s) {
 
         _actores = vector<Actor>(N, Actor(0, 0));
         _amistades = vector<pair<int, int>>(M, make_pair(0, 0));
+        _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, false));  //O(n*m)
 
         int i = 0;
 
@@ -34,9 +35,14 @@ RedSocial::RedSocial(std::string s) {
 
         while (i < M+N) {
             string e;
+            int id1, id2;
             my_file >> e;
-            my_file >> _amistades[i-N].first;
-            my_file >> _amistades[i-N].second;
+            my_file >> id1;
+            my_file >> id2;
+            _amistades[i-N].first = id1;
+            _amistades[i-N].second = id2;
+            _matrizDeAmistades[id1][id2] = true;
+            _matrizDeAmistades[id2][id1] = true;
             i++;
         }
 
@@ -45,15 +51,6 @@ RedSocial::RedSocial(std::string s) {
         sort(_actores.begin(),_actores.end(), [](Actor v, Actor u){
             return v.influencia < u.influencia;
         });
-
-        _matrizDeAmistades = vector<vector<bool>>(N+1, vector<bool>(N+1, 0)); //O(actores*amistades)
-        // Creo que deberiamos tener una listaDeAdyacencia para saber rapido el grado de un nodo.
-
-
-        for(auto & a : _amistades){
-            _matrizDeAmistades[a.first][a.second] = true;
-            _matrizDeAmistades[a.second][a.first] = true;
-        }
 
        solver();
 
@@ -97,8 +94,8 @@ vector<Actor> res;
 void RedSocial::solver() {
     vector<Actor> vacio;
     // Falta ver caso donde hay populares.
-    vector<Actor> V = _actores;  //O(n) <- Facu:Esto se puede evitar poniendo el la funcion _actores?
-    cliqueMasInfluyente(vacio, V);
+    vector<Actor> V = _actores;
+    cliqueMasInfluyente(vacio, V, 0);
     cout << "[";
     for (auto & re : res) {
         cout << re.id << ", ";
@@ -107,32 +104,35 @@ void RedSocial::solver() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
-void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{ // Pasarle paramentro influenciaDeQ.
-    //invariante(Q, K); // Funcion para el debug
+void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int influenciaDeQ) const{ // Pasarle paramentro influencia DeQ.
+    invariante(Q, K); // Funcion para el debug
     if(K.empty()){ // Caso Base
-        if(influenciaDeGrupo(Q) > influenciaMaximaVista){
-            influenciaMaximaVista = influenciaDeGrupo(Q);
+        if(influenciaDeQ > influenciaMaximaVista){
+            influenciaMaximaVista = influenciaDeQ;
             res = Q;
         }
     } else {
-        if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) { // Poda
+        if (influenciaDeQ + influenciaDeGrupo(K) <= influenciaMaximaVista) { // Poda
             return;
         } else {
             vector<Actor> Qd = Q; // Quizas no copiar estos???
             vector<Actor> Kd = K;
+
+            Actor v = K[K.size()-1];
+            int influenciaDeQConV = influenciaDeQ + v.influencia;
 
             // Caso meto a v.
             Q.push_back(K[K.size()-1]);
             K.pop_back();
             // Mantengo el Invariante de K:
             soloAmigosDeQEnK(Q, K); // INV 1: Me quedo solo con todos los amigos de Q en K.
-            agregarCliqueMasGrandeDeKAQ(Q, K); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
-            cliqueMasInfluyente(Q,K);
+            agregarCliqueMasGrandeDeKAQ(Q, K, influenciaDeQConV); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
+            cliqueMasInfluyente(Q,K, influenciaDeQConV);
 
             // Caso NO meto a v.
             Kd.pop_back();
-            agregarCliqueMasGrandeDeKAQ(Qd, Kd);// Chequiar si hay actores populares <-Facu: esto creo que no hace falta porque sino los restantes ya estarian en la clique
-            cliqueMasInfluyente(Qd, Kd);
+            agregarCliqueMasGrandeDeKAQ(Qd, Kd, influenciaDeQ);// Chequiar si hay actores populares <-Facu: esto creo que no hace falta porque sino los restantes ya estarian en la clique
+            cliqueMasInfluyente(Qd, Kd, influenciaDeQ);
         }
     }
 }
@@ -144,9 +144,9 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
     }
     return influenciaDeGrupo;
 }
-//Facu: Quizas se puede usar una variable para no tenere que calcularla toda
+
 // Idea de Invariante de Q: Fijarse solo el ultimo elemento de Q.
-void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo.
+void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo, O(K)
     int j = 0;
     while (j < K.size()){
         bool esAmigoDeTodos = sonAmigos(Q[Q.size()-1], K[j]);
@@ -159,11 +159,12 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
     }
 }
 
-void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K) const{ //O(K)
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K, int& influenciaDeQ) const{ // O(k²)
     vector<Actor> ref = K; //O(k)
     for (int i = 0; i < K.size(); ++i) { //K * O(K) <- O(k²)
         if (esAmigoDeTodos(K[i], ref)){
             Q.push_back(K[i]);
+            influenciaDeQ += K[i].influencia;
             K[i] = K[K.size()-1];
             K.pop_back();
         }
