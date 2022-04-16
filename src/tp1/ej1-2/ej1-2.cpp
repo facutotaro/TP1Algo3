@@ -97,7 +97,7 @@ void RedSocial::solver() {
 
 // Arreglar orden K.
 void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int influenciaDeQ) const{ // Pasarle paramentro influencia DeQ.
-    invariante(Q, K); // Funcion para el debug
+    //invariante(Q, K); // Funcion para el debug
     if(K.empty()){ // Caso Base
         if(influenciaDeQ > influenciaMaximaVista){
             influenciaMaximaVista = influenciaDeQ;
@@ -144,7 +144,7 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
 void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo, O(K)
     int j = 0;
     while (j < K.size()){
-        bool esAmigoDeTodos = sonAmigos(Q.back(), K[j]);
+    bool esAmigoDeTodos = sonAmigos(Q.back(), K[j]);
         if (!esAmigoDeTodos) {
             K.erase(K.begin()+j);
         } else {
@@ -152,6 +152,7 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
         }
     }
 }
+
 
 
 void RedSocial::filtrarPopulares(vector<Actor> &Q, vector<Actor> &K, vector<Actor>& sinPopulares, int& influenciaDeQ) const{
