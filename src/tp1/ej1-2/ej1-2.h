@@ -29,10 +29,6 @@ public:
 
 	string nombre() const;
 
-	vector<Actor> actores() const;
-
-	vector<pair<int,int>> amistades() const;
-
 	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int influenciaDeQ) const;
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
@@ -41,8 +37,6 @@ public:
 
 	void agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K, int& influenciaDeQ) const;
 
-	vector<vector<bool>> matrizDeAmistades();
-
 	bool sonAmigos(Actor v, Actor u) const;
 
     bool esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const;
@@ -50,6 +44,8 @@ public:
     void solver();
 
     void invariante(vector<Actor>& Q, vector<Actor>& K) const;
+
+    void filtrarPopulares(vector<Actor>& Q, vector<Actor>& K, vector<Actor>& sinPopulares, int& influenciaDeQ) const;
 
 private:
 	string _nombreDelArchivo;
