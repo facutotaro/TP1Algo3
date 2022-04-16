@@ -1,4 +1,5 @@
 #include "ej1-2.h"
+#include <assert.h>
 
 RedSocial::RedSocial(std::string s) {
     _nombreDelArchivo = std::move(s);
@@ -109,11 +110,11 @@ void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int infl
             vector<Actor> Qd = Q; // Quizas no copiar estos???
             vector<Actor> Kd = K;
 
-            Actor v = K[K.size()-1];
+            Actor v = K.back();
             int influenciaDeQConV = influenciaDeQ + v.influencia;
 
             // Caso meto a v.
-            Q.push_back(K[K.size()-1]);
+            Q.push_back(K.back());
             K.pop_back();
             // Mantengo el Invariante de K:
             soloAmigosDeQEnK(Q, K); // INV 1: Me quedo solo con todos los amigos de Q en K.
@@ -143,22 +144,22 @@ int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
 void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo, O(K)
     int j = 0;
     while (j < K.size()){
-        bool esAmigoDeTodos = sonAmigos(Q[Q.size()-1], K[j]);
+        bool esAmigoDeTodos = sonAmigos(Q.back(), K[j]);
         if (!esAmigoDeTodos) {
-            K[j] = K[K.size()-1];
-            K.pop_back();
+            K.erase(K.begin()+j);
         } else {
             j++;
         }
     }
 }
 
+
 void RedSocial::filtrarPopulares(vector<Actor> &Q, vector<Actor> &K, vector<Actor>& sinPopulares, int& influenciaDeQ) const{
     for (Actor v : K) {
         int amigos = 0;
 
         for (Actor u : K) {
-            if (_matrizDeAmistades[v.id][u.id]) {
+            if (sonAmigos(v,u)) {
                 amigos++;
             }
         }
@@ -212,6 +213,9 @@ void RedSocial::invariante(vector<Actor>& Q, vector<Actor>& K) const{
             type3++;
 
         }
+    }
+    for (int i = 0; i < K.size()-1; i++) {
+        assert(K[i].influencia <= K[i+1].influencia);
     }
     type1 = type1 / 2;
     type2 = type2 / 2;
