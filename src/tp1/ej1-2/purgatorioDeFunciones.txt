@@ -106,3 +106,75 @@ void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Ca
         }
     }
 }
+
+void RedSocial::agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K, int& influenciaDeQ) const{ // O(k²)
+    vector<Actor> ref = K; //O(k)
+    for (int i = 0; i < K.size(); ++i) { //K * O(K) <- O(k²)
+        if (esAmigoDeTodos(K[i], ref)){
+            Q.push_back(K[i]);
+            influenciaDeQ += K[i].influencia;
+            K[i] = K[K.size()-1];
+            K.pop_back();
+        }
+    }
+}
+
+bool RedSocial::esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const { //O(grupo)
+    bool esAmigoDeTodos = true;
+    for(auto v : grupo){
+        if (!(v == a) && !sonAmigos(a, v))
+            esAmigoDeTodos = false;
+            break;
+    }
+    return esAmigoDeTodos;
+}
+
+#include <assert.h>
+
+void invariante(vector<Actor>& Q, vector<Actor>& K) const;
+
+void RedSocial::invariante(vector<Actor>& Q, vector<Actor>& K) const{
+    int type1 = 0; // LOS DEL CLIQUE NO SON AMIGOS: No se cumple Q.
+    int type2 = 0; // LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K: No se cumple Inv 1.
+    int type3 = 0; // HAY POPULARES EN K: No se cumple Inv 2.
+    for (auto & q : Q)
+    {
+        for (auto & k : K) // Hay no amigos en Q.
+        {
+            if (!(q == k) && !_matrizDeAmistades[q.id][k.id]) {
+                type1++;
+
+            }
+        }
+        for (auto & k : K) // Hay no amigos de los de Q en K.
+        {
+            if (!_matrizDeAmistades[q.id][k.id]) {
+                type2++;
+            }
+        }
+    }
+    for (auto & k1 : K)
+    {
+        bool esPopular = true;
+        for (auto & k2 : K) // Hay populares en K.
+        {
+            if (!(k1 == k2) && !_matrizDeAmistades[k1.id][k2.id]) {
+                esPopular = false;
+                break;
+            }
+        }
+        if (esPopular) {
+            type3++;
+
+        }
+    }
+    for (int i = 0; i < K.size()-1; i++) {
+        assert(K[i].influencia <= K[i+1].influencia);
+    }
+    type1 = type1 / 2;
+    type2 = type2 / 2;
+    type3 = type3 / 2;
+    if (type1)cout << "LOS DEL CLIQUE NO SON AMIGOS(" << type1 << ")" << endl;
+    if (type2)cout << "LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K(" << type2 << ")" << endl;
+    if (type3)cout << "HAY POPULARES EN K(" << type3 << ")" << endl;
+}

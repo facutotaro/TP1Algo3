@@ -1,5 +1,4 @@
 #include "ej1-2.h"
-#include <assert.h>
 
 RedSocial::RedSocial(std::string s) {
     _nombreDelArchivo = std::move(s);
@@ -83,35 +82,31 @@ vector<Actor> res;
 void RedSocial::solver() {
     vector<Actor> Q;
     vector<Actor> V = _actores;
-    int influenciaDeQ = 0;
     vector<Actor> sinPopulares;
-    filtrarPopulares(Q, V, sinPopulares, influenciaDeQ);
-    cliqueMasInfluyente(Q, sinPopulares, 0);
+    filtrarPopulares(Q, V, sinPopulares);
+    cliqueMasInfluyente(Q, sinPopulares);
     cout << "[";
-    for (auto & re : res) {
-        cout << re.id << ", ";
+    int i = 0;
+    while (i < res.size()-1){
+        cout << res[i].id << ", ";
+        i++;
     }
-    cout << "]" << endl;
+    cout << res[i].id << "]" << endl;
     cout << influenciaDeGrupo(res) << endl;
 }
 
-// Arreglar orden K.
-void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int influenciaDeQ) const{ // Pasarle paramentro influencia DeQ.
-    //invariante(Q, K); // Funcion para el debug
+void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{
     if(K.empty()){ // Caso Base
-        if(influenciaDeQ > influenciaMaximaVista){
-            influenciaMaximaVista = influenciaDeQ;
+        if(influenciaDeGrupo(Q) > influenciaMaximaVista){
+            influenciaMaximaVista = influenciaDeGrupo(Q);
             res = Q;
         }
     } else {
-        if (influenciaDeQ + influenciaDeGrupo(K) <= influenciaMaximaVista) { // Poda
+        if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) { // Poda
             return;
         } else {
-            vector<Actor> Qd = Q; // Quizas no copiar estos???
+            vector<Actor> Qd = Q;
             vector<Actor> Kd = K;
-
-            Actor v = K.back();
-            int influenciaDeQConV = influenciaDeQ + v.influencia;
 
             // Caso meto a v.
             Q.push_back(K.back());
@@ -119,15 +114,15 @@ void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int infl
             // Mantengo el Invariante de K:
             soloAmigosDeQEnK(Q, K); // INV 1: Me quedo solo con todos los amigos de Q en K.
             vector<Actor> sinPopularesK;
-            filtrarPopulares(Q, K, sinPopularesK, influenciaDeQConV); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
-            cliqueMasInfluyente(Q,sinPopularesK, influenciaDeQConV);
+            filtrarPopulares(Q, K, sinPopularesK); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
+            cliqueMasInfluyente(Q,sinPopularesK);
 
             // Caso NO meto a v.
             Kd.pop_back();
             vector<Actor> sinPopularesKd;
             // Mantengo el Invariante de K:
-            filtrarPopulares(Qd, Kd, sinPopularesKd, influenciaDeQConV);
-            cliqueMasInfluyente(Qd, sinPopularesKd, influenciaDeQ);
+            filtrarPopulares(Qd, Kd, sinPopularesKd);
+            cliqueMasInfluyente(Qd, sinPopularesKd);
         }
     }
 }
@@ -135,43 +130,35 @@ void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int infl
 int RedSocial::influenciaDeGrupo(const vector<Actor>& grupo) { // O(|grupo|)
     int influenciaDeGrupo = 0;
     for(Actor v : grupo){
-        influenciaDeGrupo = influenciaDeGrupo + v.influencia;
+        influenciaDeGrupo += v.influencia;
     }
     return influenciaDeGrupo;
 }
 
 // Idea de Invariante de Q: Fijarse solo el ultimo elemento de Q.
-void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ //Cambiar ordenamiento de Actores y en vez de hacer erase usar pop back iterando sobre el ultimo, O(K)
+void RedSocial::soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const{ // O(k^2)
     int j = 0;
     while (j < K.size()){
     bool esAmigoDeTodos = sonAmigos(Q.back(), K[j]);
-        if (!esAmigoDeTodos) {
-            K.erase(K.begin()+j);
-        } else {
+        if (!esAmigoDeTodos)
+            K.erase(K.begin()+j); // Se puede mejorar esto?
+        else
             j++;
-        }
+
     }
 }
 
-
-
-void RedSocial::filtrarPopulares(vector<Actor> &Q, vector<Actor> &K, vector<Actor>& sinPopulares, int& influenciaDeQ) const{
-    for (Actor v : K) {
+void RedSocial::filtrarPopulares(vector<Actor> &Q, vector<Actor> &K, vector<Actor>& sinPopulares) const{ // O(k^2)
+    for (Actor v : K) { // Recorro todos los vertices en k.
         int amigos = 0;
-
         for (Actor u : K) {
-            if (sonAmigos(v,u)) {
+            if (sonAmigos(v,u))
                 amigos++;
-            }
         }
-
-        if (amigos == K.size() - 1) {
+        if (amigos == K.size() - 1) // La variable amigos es igual que el tamanio de K - 1 (sin contar a sigo mismo). Por lo tanto es amigo de todos y lo quiero en Q.
             Q.push_back(v);
-            influenciaDeQ += v.influencia;
-        }
-        else {
-            sinPopulares.push_back(v);
-        }
+        else
+            sinPopulares.push_back(v); // Caso contrario se queda en K.
     }
 }
 
@@ -180,51 +167,6 @@ bool RedSocial::sonAmigos(Actor v, Actor u) const{ //O(1)
 }
 
 
-void RedSocial::invariante(vector<Actor>& Q, vector<Actor>& K) const{
-    int type1 = 0; // LOS DEL CLIQUE NO SON AMIGOS: No se cumple Q.
-    int type2 = 0; // LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K: No se cumple Inv 1.
-    int type3 = 0; // HAY POPULARES EN K: No se cumple Inv 2.
-    for (auto & q : Q)
-    {
-        for (auto & k : K) // Hay no amigos en Q.
-        {
-            if (!(q == k) && !_matrizDeAmistades[q.id][k.id]) {
-                type1++;
-
-            }
-        }
-        for (auto & k : K) // Hay no amigos de los de Q en K.
-        {
-            if (!_matrizDeAmistades[q.id][k.id]) {
-                type2++;
-            }
-        }
-    }
-    for (auto & k1 : K)
-    {
-        bool esPopular = true;
-        for (auto & k2 : K) // Hay populares en K.
-        {
-            if (!(k1 == k2) && !_matrizDeAmistades[k1.id][k2.id]) {
-                esPopular = false;
-                break;
-            }
-        }
-        if (esPopular) {
-            type3++;
-
-        }
-    }
-    for (int i = 0; i < K.size()-1; i++) {
-        assert(K[i].influencia <= K[i+1].influencia);
-    }
-    type1 = type1 / 2;
-    type2 = type2 / 2;
-    type3 = type3 / 2;
-    if (type1)cout << "LOS DEL CLIQUE NO SON AMIGOS(" << type1 << ")" << endl;
-    if (type2)cout << "LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K(" << type2 << ")" << endl;
-    if (type3)cout << "HAY POPULARES EN K(" << type3 << ")" << endl;
-}
 
 
 

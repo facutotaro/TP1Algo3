@@ -29,23 +29,17 @@ public:
 
 	string nombre() const;
 
-	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K, int influenciaDeQ) const;
+	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const;
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
 
 	void soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const;
 
-	void agregarCliqueMasGrandeDeKAQ(vector<Actor>& Q, vector<Actor>& K, int& influenciaDeQ) const;
+	void filtrarPopulares(vector<Actor>& Q, vector<Actor>& K, vector<Actor>& sinPopulares) const;
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-    bool esAmigoDeTodos(Actor a, const vector<Actor>& grupo) const;
-
     void solver();
-
-    void invariante(vector<Actor>& Q, vector<Actor>& K) const;
-
-    void filtrarPopulares(vector<Actor>& Q, vector<Actor>& K, vector<Actor>& sinPopulares, int& influenciaDeQ) const;
 
 private:
 	string _nombreDelArchivo;
