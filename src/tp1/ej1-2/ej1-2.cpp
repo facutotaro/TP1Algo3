@@ -53,8 +53,6 @@ RedSocial::RedSocial(std::string s) {
         });
 
     }
-    //solverEj2();
-
 }
 
 RedSocial::~RedSocial() {
@@ -94,14 +92,108 @@ void RedSocial::solverEj1() {
     cout << influenciaDeGrupo(res) << endl;
 }
 
+void RedSocial::cliqueMasInfluyente(vector<Actor> &Q, vector<Actor> &K) const {
+    if (K.empty()) { // Caso Base
+        if (influenciaDeGrupo(Q) > influenciaMaximaVista) {
+            influenciaMaximaVista = influenciaDeGrupo(Q);
+            res = Q;
+        }
+    } else {
+        vector<vector<Actor>> I;
+        if (influenciaDeGrupo(Q) + influenciaGruposIndependientes(I, K) <= influenciaMaximaVista) { return; }
+        else {
+            if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) { return; }
+            else {
+                vector<Actor> Qd = Q;
+                vector<Actor> Kd = K;
+
+                // Caso meto a v.
+                Q.push_back(K.back());
+                K.pop_back();
+                // Mantengo el Invariante de K:
+                soloAmigosDeQEnK(Q, K); // INV 1: Me quedo solo con todos los amigos de Q en K.
+                vector<Actor> sinPopularesK;
+                filtrarPopulares(Q, K,sinPopularesK); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
+                cliqueMasInfluyente(Q, sinPopularesK);
+
+                // Caso NO meto a v.
+                Kd.pop_back();
+                vector<Actor> sinPopularesKd;
+                // Mantengo el Invariante de K:
+                filtrarPopulares(Qd, Kd, sinPopularesKd);
+                cliqueMasInfluyente(Qd, sinPopularesKd);
+                // }
+            }
+        }
+    }
+}
+
+int RedSocial::influenciaGruposIndependientes(vector<vector<Actor>> &I, vector<Actor> &K) const {
+    int influencia = 0;
+    for (int i = K.size()-1; i >= 0 ; --i) {
+        bool metido = false;
+        for (auto & j : I) {
+            if (noTieneAmigos(j, K[i])){
+                j.push_back(K[i]);
+                metido = true;
+                break;
+            }
+        }
+        if(!metido){
+            I.push_back({K[i]});
+            influencia += K[i].influencia;
+        }
+    }
+    return influencia;
+}
+
+
+bool RedSocial::noTieneAmigos(const vector<Actor>& grupo, Actor a) const {
+    bool noTieneAmigos = true;
+    for (auto &u : grupo) {
+        if (sonAmigos(a, u)) {
+            noTieneAmigos = false;
+            break;
+        }
+    }
+    return noTieneAmigos;
+}
+
+int RedSocial::influenciaDeGrupo(const vector<Actor> &grupo) { // O(|grupo|)
+    int influenciaDeGrupo = 0;
+    for (Actor v : grupo) {
+        influenciaDeGrupo += v.influencia;
+    }
+    return influenciaDeGrupo;
+}
+
+// Idea de Invariante de Q: Fijarse solo el ultimo elemento de Q.
+void RedSocial::soloAmigosDeQEnK(vector<Actor> &Q, vector<Actor> &K) const { // O(k^2)
+    vector<Actor> soloAmigosDeQEnK;
+    for (auto & i : K) {
+        if (sonAmigos(Q.back(), i)) soloAmigosDeQEnK.push_back(i);
+    }
+    K = soloAmigosDeQEnK;
+}
+
+void RedSocial::filtrarPopulares(vector<Actor> &Q, vector<Actor> &K, vector<Actor> &sinPopulares) const { // O(k^2)
+    for (Actor v : K) { // Recorro todos los vertices en k.
+        int amigos = 0;
+        for (Actor u : K)
+            if (sonAmigos(v, u)) amigos++;
+        if (amigos == K.size() - 1) Q.push_back(v); // La variable amigos es igual que el tamanio de K - 1 (sin contar a sigo mismo). Por lo tanto es amigo de todos y lo quiero en Q.
+        else sinPopulares.push_back(v); // Caso contrario se queda en K.
+    }
+}
+
+bool RedSocial::sonAmigos(Actor v, Actor u) const { //O(1)
+    return _matrizDeAmistades[v.id][u.id];
+}
+
 void RedSocial::solverEj2() {
     //Armo vector de tuplas
-    vector<pair<Actor, bool>> K;
-    for (auto &a : _actores) {
-        K.emplace_back(a, false);
-    }
-
-    vector<vector<Actor>> I(1);
+    vector<Actor> K = _actores;
+    vector<vector<Actor>> I;
     particionConMenorInfluencia(I, K);
     int influencia = 0;
     cout << "[";
@@ -123,143 +215,18 @@ void RedSocial::solverEj2() {
 
 }
 
-
-void RedSocial::particionConMenorInfluencia(vector<vector<Actor>> &I,
-    vector<pair<Actor, bool>> &K) const { //K tiene tuplas: <actor, bool> donde el booleano es true si el actor ya fue agregado a I.
-    int indiceSubgrupoActual = 0;
-    int usados = 0;
-    for (int i = K.size() - 1; i >= 0 && usados < K.size(); --i) {
-        for (int j = K.size() - 1; j >= 0 && usados < K.size(); j--) {
-            if (!K[j].second && noTieneAmigos(I[indiceSubgrupoActual], K[j].first)) {
-                I[indiceSubgrupoActual].push_back(K[j].first);
-                K[j].second = true;
-                usados++;
-            }
-        }
-        if (usados < K.size()) {
-            vector<Actor> nuevoSubgrupo;
-            I.push_back(nuevoSubgrupo);
-            indiceSubgrupoActual++;
-        }
-    }
-}
-
-
-
-int RedSocial::influenciaGruposIndependientes(vector<vector<Actor>> &I, vector<Actor> &K) const {
-    int influencia = 0;
+void RedSocial::particionConMenorInfluencia(vector<vector<Actor>> &I, vector<Actor> &K) const { //K tiene tuplas: <actor, bool> donde el booleano es true si el actor ya fue agregado a I.
     for (int i = K.size()-1; i >= 0 ; --i) {
         bool metido = false;
-        for (int j = 0; j < I.size(); ++j) {
-            if (noTieneAmigos(I[j], K[i])){
-                I[j].push_back(K[i]);
+        for (auto & j : I) {
+            if (noTieneAmigos(j, K[i])){
+                j.push_back(K[i]);
                 metido = true;
                 break;
             }
         }
-        if(!metido){
-            I.push_back({K[i]});
-            influencia += K[i].influencia;
-        }
+        if(!metido) I.push_back({K[i]});
     }
-    return influencia;
-}
-
-
-bool RedSocial::noTieneAmigos(vector<Actor> grupo, Actor a) const {
-    bool noTieneAmigos = true;
-    for (auto &u : grupo) {
-        if (sonAmigos(a, u)) {
-            noTieneAmigos = false;
-            break;
-        }
-    }
-    return noTieneAmigos;
-}
-
-
-void RedSocial::cliqueMasInfluyente(vector<Actor> &Q, vector<Actor> &K) const {
-    if (K.empty()) { // Caso Base
-        if (influenciaDeGrupo(Q) > influenciaMaximaVista) {
-            influenciaMaximaVista = influenciaDeGrupo(Q);
-            res = Q;
-        }
-    } else {
-        vector<vector<Actor>> I;
-        if (influenciaDeGrupo(Q) + influenciaGruposIndependientes(I, K) <= influenciaMaximaVista) // Poda EJ 2
-        {
-            return;
-        } else {
-            /*if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista) { //Poda
-                return;
-            } else {*/
-                vector<Actor> Qd = Q;
-                vector<Actor> Kd = K;
-
-                // Caso meto a v.
-                Q.push_back(K.back());
-                K.pop_back();
-                // Mantengo el Invariante de K:
-                soloAmigosDeQEnK(Q, K); // INV 1: Me quedo solo con todos los amigos de Q en K.
-                vector<Actor> sinPopularesK;
-                filtrarPopulares(Q, K, sinPopularesK); // INV 2: Busco todos los que no tienen no amigos y los agrego a Q.
-                cliqueMasInfluyente(Q, sinPopularesK);
-
-                // Caso NO meto a v.
-                Kd.pop_back();
-                vector<Actor> sinPopularesKd;
-                // Mantengo el Invariante de K:
-                filtrarPopulares(Qd, Kd, sinPopularesKd);
-                cliqueMasInfluyente(Qd, sinPopularesKd);
-           // }
-        }
-    }
-}
-
-int RedSocial::influenciaDeGrupo(const vector<Actor> &grupo) { // O(|grupo|)
-    int influenciaDeGrupo = 0;
-    for (Actor v : grupo) {
-        influenciaDeGrupo += v.influencia;
-    }
-    return influenciaDeGrupo;
-}
-
-// Idea de Invariante de Q: Fijarse solo el ultimo elemento de Q.
-void RedSocial::soloAmigosDeQEnK(vector<Actor> &Q, vector<Actor> &K) const { // O(k^2)
-    vector<Actor> res;
-    for (int i = 0; i < K.size(); ++i) {
-        if (sonAmigos(Q.back(), K[i])) res.push_back(K[i]);
-    }
-    K = res;
-
-
-/*    int j = 0;
-    while (j < K.size()) {
-        bool esAmigoDeTodos = sonAmigos(Q.back(), K[j]);
-        if (!esAmigoDeTodos)
-            K.erase(K.begin() + j); // Se puede mejorar esto?
-        else
-            j++;
-
-    }*/
-}
-
-void RedSocial::filtrarPopulares(vector<Actor> &Q, vector<Actor> &K, vector<Actor> &sinPopulares) const { // O(k^2)
-    for (Actor v : K) { // Recorro todos los vertices en k.
-        int amigos = 0;
-        for (Actor u : K) {
-            if (sonAmigos(v, u))
-                amigos++;
-        }
-        if (amigos == K.size() - 1) // La variable amigos es igual que el tamanio de K - 1 (sin contar a sigo mismo). Por lo tanto es amigo de todos y lo quiero en Q.
-            Q.push_back(v);
-        else
-            sinPopulares.push_back(v); // Caso contrario se queda en K.
-    }
-}
-
-bool RedSocial::sonAmigos(Actor v, Actor u) const { //O(1)
-    return _matrizDeAmistades[v.id][u.id];
 }
 
 

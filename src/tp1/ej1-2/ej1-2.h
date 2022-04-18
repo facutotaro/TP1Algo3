@@ -29,9 +29,15 @@ public:
 
 	string nombre() const;
 
+    void solverEj1();
+
+    void solverEj2();
+
 	void cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const;
 
 	static int influenciaDeGrupo(const vector<Actor>& grupo) ;
+
+    int influenciaGruposIndependientes(vector<vector<Actor>>& I, vector<Actor>& K) const;
 
 	void soloAmigosDeQEnK(vector<Actor>& Q, vector<Actor>& K) const;
 
@@ -39,15 +45,9 @@ public:
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-    void solverEj1();
+    void particionConMenorInfluencia(vector<vector<Actor>> &I, vector<Actor> &K) const;
 
-    void solverEj2();
-
-    void particionConMenorInfluencia(vector<vector<Actor>>& I, vector<pair<Actor, bool>>& K) const;
-
-    bool noTieneAmigos(vector<Actor> grupo, Actor a) const;
-
-    int influenciaGruposIndependientes(vector<vector<Actor>>& I, vector<Actor>& K) const;
+    bool noTieneAmigos(const vector<Actor>& grupo, Actor a) const;
 
 private:
 	string _nombreDelArchivo;
