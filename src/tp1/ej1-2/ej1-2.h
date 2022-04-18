@@ -39,13 +39,22 @@ public:
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-    void solver();
+    void solverEj1();
+
+    void solverEj2();
+
+    void particionConMenorInfluencia(vector<vector<Actor>>& I, vector<pair<Actor, bool>>& K) const;
+
+    bool noTieneAmigos(vector<Actor> grupo, Actor a) const;
+
+    int influenciaGruposIndependientes(vector<vector<Actor>>& I, vector<Actor>& K) const;
 
 private:
 	string _nombreDelArchivo;
 	vector<Actor> _actores;
 	vector<pair<int, int>> _amistades;
 	vector<vector<bool>> _matrizDeAmistades;
+
 
 };
 

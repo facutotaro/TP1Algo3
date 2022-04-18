@@ -27,9 +27,11 @@ int main()
 	{
 	case 1:
 	{
-        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
 		RedSocial r1(nombre);
 		nombreArchivo = r1.nombre();
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+		r1.solverEj1();
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
         duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
@@ -39,8 +41,15 @@ int main()
 	}
 	case 2:
 	{
-		RedSocial r2(nombre);
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	    RedSocial r2(nombre);
 		nombreArchivo = r2.nombre();
+		r2.solverEj2();
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+        std::cout << "It took me " << time_span.count() << " seconds.";
+        std::cout << std::endl;
 		break;
 	}
 	case 3:
@@ -55,6 +64,7 @@ int main()
 		nombreArchivo = sg.nombre();
 		break;
 	}
+	    default: break;
 	}
 
 	cout << "Estas trabajando con el ej " << n << endl;

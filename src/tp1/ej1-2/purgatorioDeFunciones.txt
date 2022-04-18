@@ -178,3 +178,71 @@ void RedSocial::invariante(vector<Actor>& Q, vector<Actor>& K) const{
     if (type2)cout << "LOS DEL CLIQUE NO SON AMIGOS CON LOS DE K(" << type2 << ")" << endl;
     if (type3)cout << "HAY POPULARES EN K(" << type3 << ")" << endl;
 }
+
+
+
+////////////////////////////////////Ej 2
+
+
+
+/*    for (int j = 0; j < I.size(); ++j) {
+
+    }
+    for(int i = K.size()-1; i >= 0 ; i--){
+        vector<Actor> sinGrupo;
+        if (noTieneAmigos(I[indiceSubgrupoActual], K[i])){
+            I[indiceSubgrupoActual].push_back(K[i]);
+        } else {
+            sinGrupo.push_back(K[i]);
+        }
+    }*/
+
+
+
+
+    //Caso base: cuando K es vacio
+    /*for (auto & i : K) {
+        pair<int, int> subgrupoCandidato = make_pair(-1,-1); //First: Indice, Second: Influencia
+        for (int j = 0; j < I.size(); ++j) {
+            if(noTieneAmigos(I[j].first, i)){
+                   if (subgrupoCandidato.second > I[j].second) subgrupoCandidato = make_pair(j, I[j].second);
+            }
+        }
+        int indice = subgrupoCandidato.first;
+        if (indice == -1){
+            pair<vector<Actor>, int> nuevoSubgrupo;
+            nuevoSubgrupo.first.push_back(i);
+            nuevoSubgrupo.second = i.influencia;
+            I.push_back(nuevoSubgrupo);
+        } else {
+            I[indice].first.push_back(i);
+            I[indice].second = max(I[indice].second, i.influencia);
+        }
+    }*/
+
+
+    /*
+        vector<bool> vectorUsados(K.size(), false);
+        int usados = 0;
+        int indiceSubgrupoActual = 0;
+        int influenciaI = 0;
+
+        for (int i = K.size() - 1; i >= 0 && usados < K.size(); --i) {
+            int influenciaGrupo = 0;
+            for (int j = K.size() - 1; j >= 0 && usados < K.size(); j--) {
+                if (!vectorUsados[j] && noTieneAmigos(I[indiceSubgrupoActual], K[j])) {
+                    I[indiceSubgrupoActual].push_back(K[j]);
+                    vectorUsados[j] = true;
+                    influenciaGrupo = max(K[j].influencia, influenciaGrupo);
+                    usados++;
+                }
+            }
+            influenciaI += influenciaGrupo;
+            if (usados < K.size()) {
+                vector<Actor> nuevoSubgrupo;
+                I.push_back(nuevoSubgrupo);
+                indiceSubgrupoActual++;
+            }
+        }
+        return influenciaI;
+    */
