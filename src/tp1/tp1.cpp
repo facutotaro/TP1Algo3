@@ -5,8 +5,10 @@
 #include "ej1-2/ej1-2.h"
 #include "ej3/ej3.h"
 #include "ej4/ej4.h"
+#include<chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +23,7 @@ int main(int argc, char *argv[])
 	{
 	case 1:
 	{
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
 		RedSocial r1(nombre);
 		nombreArchivo = r1.nombre();
 		cout << nombreArchivo << endl;
@@ -53,3 +56,7 @@ int main(int argc, char *argv[])
 	
 	return 0;
 }
+
+
+
+
