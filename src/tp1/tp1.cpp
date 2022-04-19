@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	{
 	case 1:
 	{
+<<<<<<< HEAD
 		auto t1 = high_resolution_clock::now();
 		RedSocial r1(nombre);
 		nombreArchivo = r1.nombre();
@@ -38,10 +39,23 @@ int main(int argc, char *argv[])
 		auto tiempo = duration_cast<milliseconds>(t2 - t1);
 		duration<double, std::milli> tiempo_d = t2 - t1;
 		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
+=======
+
+		RedSocial r1(nombre);
+		nombreArchivo = r1.nombre();
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+		r1.solverEj1();
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+        std::cout << "It took me " << time_span.count() << " seconds.";
+        std::cout << std::endl;
+>>>>>>> FedeJuli
 		break;
 	}
 	case 2:
 	{
+<<<<<<< HEAD
 		auto t1 = high_resolution_clock::now();
 		RedSocial r2(nombre);
 		nombreArchivo = r2.nombre();
@@ -50,6 +64,17 @@ int main(int argc, char *argv[])
 		auto tiempo = duration_cast<milliseconds>(t2 - t1);
 		duration<double, std::milli> tiempo_d = t2 - t1;
 		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
+=======
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	    RedSocial r2(nombre);
+		nombreArchivo = r2.nombre();
+		r2.solverEj2();
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+        std::cout << "It took me " << time_span.count() << " seconds.";
+        std::cout << std::endl;
+>>>>>>> FedeJuli
 		break;
 	}
 	case 3:
@@ -76,6 +101,7 @@ int main(int argc, char *argv[])
 		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
 		break;
 	}
+	    default: break;
 	}
 
 	cout << "Estas trabajando con el ej " << n << endl;
