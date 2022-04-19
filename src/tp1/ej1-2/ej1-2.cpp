@@ -4,7 +4,7 @@ RedSocial::RedSocial(std::string s) {
     _nombreDelArchivo = std::move(s);
 
     ifstream my_file;
-    my_file.open("../ej1-2/instancias-ej1-2/" + _nombreDelArchivo + ".clq", ios::in);
+    my_file.open("../ej1-2/instancias-ej1-2/" + _nombreDelArchivo, ios::in);
     if (!my_file) {
     } else {
         string o, p;
