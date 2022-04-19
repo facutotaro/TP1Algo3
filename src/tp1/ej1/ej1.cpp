@@ -76,13 +76,13 @@ void RedSocialEj1::solverEj1()
     filtrarPopulares(Q, V, sinPopulares);
     cliqueMasInfluyente(Q, sinPopulares);
     cout << influenciaMaximaVista1 << endl;
-    int i = 0;
-    while (i < _res.size() - 1)
-    {
-        cout << _res[i].id << " ";
-        i++;
-    }
-    cout << _res[i].id << endl;
+    // int i = 0;
+    // while (i < _res.size() - 1)
+    // {
+    //     cout << _res[i].id << " ";
+    //     i++;
+    // }
+    // cout << _res[i].id << endl;
 }
 
 void RedSocialEj1::cliqueMasInfluyente(vector<Actor1> &Q, vector<Actor1> &K) const

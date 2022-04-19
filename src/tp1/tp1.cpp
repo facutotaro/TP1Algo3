@@ -45,8 +45,10 @@ int main(int argc, char *argv[])
 		Schedule s;
 		cout << s.solver_bu() << endl;
 		//s.td() si se quiere la resolucion top down
+		s.reconstruir();
 		s.imprimir();
 		cout << endl;
+		break;
 	}
 	case 4:
 	{	

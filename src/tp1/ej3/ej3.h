@@ -18,7 +18,7 @@ public:
 
     int solver_bu() const;
 
-    vector<int> reconstruir();
+    void reconstruir();
 
     vector<int> verificador(vector<int>& w);
 
@@ -42,6 +42,8 @@ private:
     vector<vector<int>> _comienzoAct;
 
     vector<int> _actDespues;
+
+    vector<int> _solu;
 	
 };
 

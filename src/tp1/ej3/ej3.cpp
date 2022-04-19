@@ -48,6 +48,8 @@ Schedule::Schedule()
     {
         _actDespues[i] = _comienzoAct[_actividades[i].second + 1][0];
     }
+
+    vector<int> _solu;
 }
 
 Schedule::~Schedule()
@@ -90,9 +92,8 @@ int Schedule::bottom_up() const {
     return M[0];
 }
 
-vector<int> Schedule::reconstruir()
+void Schedule::reconstruir()
 {
-    vector<int> v;
     int i = 0;
     //La idea es la siguiente. 
     //Como para M[i] vamos acumulando el beneficio m�ximo entre las actividades i y n-1
@@ -105,10 +106,9 @@ vector<int> Schedule::reconstruir()
         {
             i++;
         }
-        v.push_back(i);
+        _solu.push_back(i);
         i = _actDespues[i];
     }
-    return v;
 }
 
 
@@ -155,8 +155,8 @@ vector<vector<int>> Schedule::solu(vector<int> &w)
 
 void Schedule::imprimir()
 {
-    for (int i = 0; i < M.size(); i++)
+    for (int i = 0; i < _solu.size(); i++)
     {
-        cout << M[i] << " ";
+        cout << _solu[i] << " ";
     }
 }

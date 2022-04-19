@@ -1,0 +1,9 @@
+echo "instancias de ej3" > res4.output
+echo "" >> res4.output
+for i in ../instancias/instancias-ej4/*
+do
+    base_name=$(basename $i)
+    echo ${base_name} >> res4.output
+    /usr/bin/time -f "Tardó: %e" -o res4.output -a timeout 800 ./tp1 2 < $i >> res4.output
+    echo "" >> res4.output
+done
