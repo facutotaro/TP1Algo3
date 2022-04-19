@@ -88,9 +88,9 @@ void RedSocial::solverEj1() {
         cout << res[i].id << ", ";
         i++;
     }
-    //cout << res[i].id << "]" << endl;
+    cout << res[i].id << "]" << endl;
     res[i].id;
-    //cout << influenciaDeGrupo(res) << endl;
+    cout << influenciaDeGrupo(res) << endl;
 }
 
 void RedSocial::cliqueMasInfluyente(vector<Actor> &Q, vector<Actor> &K) const {
