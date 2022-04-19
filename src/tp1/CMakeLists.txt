@@ -4,13 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Agregue un origen al ejecutable de este proyecto.
-add_executable (tp1 "tp1.cpp" "tp1.h" "ej1-2/ej1-2.h" "ej1-2/ej1-2.cpp" "ej3/ej3.cpp" "ej3/ej3.h" "ej4/ej4.cpp" "ej4/ej4.h")
+add_executable (tp1 "tp1.cpp" "tp1.h" "ej1/ej1.h" "ej1/ej1.cpp" "ej3/ej3.cpp" "ej3/ej3.h" "ej4/ej4.cpp" "ej4/ej4.h" "ej2/ej2.cpp" "ej2/ej2.h")
 
 # TODO: Agregue pruebas y destinos de instalación si es necesario.
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif()
-
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
