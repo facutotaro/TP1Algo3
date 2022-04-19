@@ -3,26 +3,36 @@
 #include <utility>
 #include <iostream>
 
-Schedule::Schedule()
+Schedule::Schedule(string &s)
 {
-    cin >> _cantActividades;
+    _nombreDelArchivo = std::move(s);
 
-    _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
-    _beneficios = vector<int>(_cantActividades, 0);
-    _comienzoAct = vector<vector<int>>(2 * _cantActividades+2, vector<int>());
-    _actDespues = vector<int>(_cantActividades, 0);
-    M = vector<int>(_cantActividades + 1, 0);
-
-    int i = 0;
-
-    while (i < _cantActividades) {
-
-        cin >> _actividades[i].first;
-        cin >> _actividades[i].second;
-        cin >> _beneficios[i];
-
-        i++;
+    ifstream my_file;
+    my_file.open(_nombreDelArchivo, ios::in);
+    if (!my_file) {
     }
+    else {
+        my_file >> _cantActividades;
+
+        _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
+        _beneficios = vector<int>(_cantActividades, 0);
+        _comienzoAct = vector<vector<int>>(2 * _cantActividades+2, vector<int>());
+        _actDespues = vector<int>(_cantActividades, 0);
+        M = vector<int>(_cantActividades + 1, 0);
+
+        int i = 0;
+
+        while (!my_file.eof()&&i<_cantActividades) {
+
+            my_file >> _actividades[i].first;
+            my_file >> _actividades[i].second;
+            my_file >> _beneficios[i];
+
+            i++;
+        }
+
+    }
+    my_file.close();
     //Creamos un vector de vectores con la hora a la que comienza una actividad
     for (int i = 0; i < _cantActividades; i++)
     {
@@ -92,7 +102,7 @@ int Schedule::bottom_up() const {
     return M[0];
 }
 
-void Schedule::reconstruir()
+void Schedule::reconstruir()const
 {
     int i = 0;
     //La idea es la siguiente. 
@@ -113,7 +123,7 @@ void Schedule::reconstruir()
 
 
 //Verifica si el fin de una actividad es antes del comienzo de otra
-vector<int> Schedule::verificador(vector<int> &w)
+vector<int> Schedule::verificador(vector<int> &w)const
 {
     vector<int> v;
     for (int i = 0; i < w.size(); i++)
@@ -132,7 +142,7 @@ vector<int> Schedule::verificador(vector<int> &w)
 
 
 //Reconstruye una matriz con el comienzo, fin y beneficio, y el acumulado de los beneficios de un vector con el indice de las actividades
-vector<vector<int>> Schedule::solu(vector<int> &w)
+vector<vector<int>> Schedule::solu(vector<int> &w)const
 {
     vector<vector<int>> v;
     vector<int> k;
@@ -153,7 +163,7 @@ vector<vector<int>> Schedule::solu(vector<int> &w)
     return v;
 }
 
-void Schedule::imprimir()
+void Schedule::imprimir()const
 {
     for (int i = 0; i < _solu.size(); i++)
     {

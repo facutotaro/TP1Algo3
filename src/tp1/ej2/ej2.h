@@ -11,9 +11,11 @@ using namespace std;
 class RedSocialEj2
 {
 public:
-    RedSocialEj2();
+    RedSocialEj2(string nombreDelArchivo);
 
     ~RedSocialEj2();
+
+    string nombre() const;
 
     void solverEj2();
 
@@ -43,11 +45,10 @@ private:
 
     bool noTieneAmigos(const vector<Actor2>& grupo, Actor2 a) const;
 
+    string _nombreDelArchivo;
     vector<Actor2> _actores;
     vector<pair<int, int>> _amistades;
     vector<vector<bool>> _matrizDeAmistades;
-    mutable vector<Actor2> _res;
-    mutable int influenciaMaximaVista2;
 
 
 };

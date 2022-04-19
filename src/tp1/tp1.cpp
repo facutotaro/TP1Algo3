@@ -22,12 +22,13 @@ int main(int argc, char *argv[])
 	ios::sync_with_stdio(false);
     cin.tie(0);
 	int n = stoi(argv[1]);
-
+	string nombre;
+	cin >> nombre;
 	switch (n)
 	{
 	case 1:
 	{
-		RedSocialEj1 r1;
+		RedSocialEj1 r1(nombre);
         r1.solverEj1();
 		cout << endl;
 		break;
@@ -35,14 +36,14 @@ int main(int argc, char *argv[])
 	case 2:
 	{
 
-	    RedSocialEj2 r2;
+	    RedSocialEj2 r2(nombre);
 		r2.solverEj2();
 		cout << endl;
 		break;
 	}
 	case 3:
 	{
-		Schedule s;
+		Schedule s(nombre);
 		cout << s.solver_bu() << endl;
 		//s.td() si se quiere la resolucion top down
 		s.reconstruir();
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
 	case 4:
 	{	
 
-		ScheduleGol sg;
+		ScheduleGol sg(nombre);
 		cout << sg.solver() << endl;
 		sg.imprimir();
 		cout << endl;

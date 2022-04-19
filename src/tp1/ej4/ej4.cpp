@@ -3,18 +3,26 @@
 #include <utility>
 #include <iostream>
 
-ScheduleGol::ScheduleGol()
+ScheduleGol::ScheduleGol(string &s)
 {
-    cin >> _cantActividades;
+    _nombreDelArchivo = s;
 
-    _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
-    _sched = vector<int>(2*_cantActividades + 1, -1);
+    ifstream my_file;
+    my_file.open(_nombreDelArchivo, ios::in);
+    if (!my_file) {
+    }
+    else {
+        my_file >> _cantActividades;
 
-    int i = 0;
-    while(i < _cantActividades){
-        cin >> _actividades[i].first;
-        cin >> _actividades[i].second;
-        i++;
+        _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
+        _sched = vector<int>(2*_cantActividades + 1, -1);
+
+        int i = 0;
+        while(!my_file.eof()){
+            my_file >> _actividades[i].first;
+            my_file >> _actividades[i].second;
+            i++;
+        }
     }
 }
 
@@ -23,7 +31,7 @@ ScheduleGol::~ScheduleGol()
 
 }
 
-int ScheduleGol::solver() {
+int ScheduleGol::solver()const{
     for(int i = 0; i < _cantActividades; i++){
         if(_sched[_actividades[i].second] == -1){
             _sched[_actividades[i].second] = i;
@@ -72,7 +80,7 @@ int ScheduleGol::solver() {
     return res;
 }
 
-void ScheduleGol::imprimir()
+void ScheduleGol::imprimir()const
 {
     for (int i = 0; i < _solu.size(); i++)
     {

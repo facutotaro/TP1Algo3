@@ -3,6 +3,7 @@
 
 #include "string"
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -10,22 +11,24 @@ class ScheduleGol
 {
 public:
 
-	ScheduleGol();
+	ScheduleGol(string &s);
 
 	~ScheduleGol();
 
-    int solver();
+    int solver()const;
 
-    void imprimir();
+    void imprimir()const;
 
 private:
     int _cantActividades;
 
     vector<pair<int, int>> _actividades;
 
-    vector<int> _sched;
+    mutable vector<int> _sched;
 
-    vector<int> _solu;
+    mutable vector<int> _solu;
+    
+    string _nombreDelArchivo;
 };
 
 #endif // !SCHEDULEG

@@ -12,9 +12,11 @@ using namespace std;
 class RedSocialEj1
 {
 public:
-    RedSocialEj1();
+    RedSocialEj1(string nombreDelArchivo);
 
 	~RedSocialEj1();
+
+	string nombre() const;
 
     void solverEj1();
 
@@ -39,11 +41,10 @@ private:
 
     bool sonAmigos(Actor1 v, Actor1 u) const;
 
+	string _nombreDelArchivo;
 	vector<Actor1> _actores;
 	vector<pair<int, int>> _amistades;
 	vector<vector<bool>> _matrizDeAmistades;
-    mutable vector<Actor1> _res;
-    mutable int influenciaMaximaVista1;
 };
 
 

@@ -3,6 +3,7 @@
 
 #include "string"
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -10,7 +11,7 @@ class Schedule
 {
 public:
 
-	Schedule();
+	Schedule(string& s);
 
 	~Schedule();
 
@@ -18,13 +19,13 @@ public:
 
     int solver_bu() const;
 
-    void reconstruir();
+    void reconstruir() const;
 
-    vector<int> verificador(vector<int>& w);
+    vector<int> verificador(vector<int>& w) const;
 
-    vector<vector<int>> solu(vector<int> &w);
+    vector<vector<int>> solu(vector<int> &w)const;
 
-    void imprimir();
+    void imprimir()const;
 private:
 
     int top_down(int i) const;
@@ -43,8 +44,9 @@ private:
 
     vector<int> _actDespues;
 
-    vector<int> _solu;
+    mutable vector<int> _solu;
 	
+    string _nombreDelArchivo;
 };
 
 #endif // !SCHEDULE
