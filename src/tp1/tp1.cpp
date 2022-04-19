@@ -8,17 +8,13 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-	int n = 0;
-	do {
-		cout << "Ingrese numero de ejercicio: " << endl;
-		cin >> n;
-	} while (!(n > 0 && n <= 4));
+	ios::sync_with_stdio(false);
+    cin.tie(0);
+	int n = stoi(argv[1]);
 
-	string nombre = "";
-	cout << "Ingrese nombre del archivo: " << endl;
-	cin >> nombre;
+	string nombre = argv[2];
 	string nombreArchivo;
 
 	switch (n)
@@ -27,6 +23,7 @@ int main()
 	{
 		RedSocial r1(nombre);
 		nombreArchivo = r1.nombre();
+		cout << nombreArchivo << endl;
 		break;
 	}
 	case 2:
@@ -39,24 +36,7 @@ int main()
 	{
 		Schedule s(nombre);
 		nombreArchivo = s.nombre();
-		cout << "El maximo beneficio es" << s.solver_bu() << endl;
-		vector<int> solu = s.reconstruir();
-		vector<int> veri = s.verificador(solu);
-		vector<vector<int>> sol = s.solu(solu);
-		for (int i = 0; i < sol.size(); i++)
-		{
-			cout << solu[i] << "; ";
-			for (int j = 0; j < 4; j++)
-			{
-				cout << sol[i][j] << "; ";
-			}
-			cout << endl;
-		}
-		for (int i = 0; i < solu.size(); i++)
-		{
-			cout << solu[i] << ", ";
-		}
-		veri.size() == 0 ? cout << "Esta bien" << endl : cout << "Esta mal" << endl;
+		cout << "El maximo beneficio es " << s.solver_bu() << endl;
 		break;
 	}
 	case 4:

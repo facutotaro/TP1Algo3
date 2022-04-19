@@ -85,7 +85,7 @@ int Schedule::top_down(int i) const {
     {
         if (M[i] == 0)
         {
-            //Si no se calculó el beneficio hasta la siguiente actividad lo calculo, y sinó lo uso. Y lo compara con el beneficio de la
+            //Si no se calculï¿½ el beneficio hasta la siguiente actividad lo calculo, y sinï¿½ lo uso. Y lo compara con el beneficio de la
             //actividad actual con el llamado recursivo del conjunto de actividades que arrancan despues de que esta termina
             M[i] = max(M[i+1] == 0 ? top_down(i+1) : M[i+1], _beneficios[i] + top_down(_actDespues[i]));
         }
@@ -111,9 +111,9 @@ vector<int> Schedule::reconstruir()
     vector<int> v;
     int i = 0;
     //La idea es la siguiente. 
-    //Como para M[i] vamos acumulando el beneficio máximo entre las actividades i y n-1
+    //Como para M[i] vamos acumulando el beneficio mï¿½ximo entre las actividades i y n-1
     //y todas las actividades tienen beneficio mayor a 0, entonces si M[i] es mayor que M[i+1] significa que insertamos a la actividad i
-    //Luego, saltamos a la casilla de la primera actividad que se puede realizar despues de que termine la actividad i y seguimos la misma lógica
+    //Luego, saltamos a la casilla de la primera actividad que se puede realizar despues de que termine la actividad i y seguimos la misma lï¿½gica
     //Tanto en td como bu vamos a llenar todas las casiillas porque en cada actividad llamamos a la siguiente
     while(i < _cantActividades)
     {
