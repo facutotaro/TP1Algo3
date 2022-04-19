@@ -23,69 +23,43 @@ int main(int argc, char *argv[])
     cin.tie(0);
 	int n = stoi(argv[1]);
 
-	string nombre = argv[2];
-	string nombreArchivo;
-
 	switch (n)
 	{
 	case 1:
 	{
-		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		RedSocialEj1 r1(nombre);
-		nombreArchivo = r1.nombre();
-        
-		r1.solverEj1();
-        high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
-        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-        std::cout << "It took me " << time_span.count() << " seconds.";
-        std::cout << std::endl;
+		RedSocialEj1 r1;
+        r1.solverEj1();
+		cout << endl;
 		break;
 	}
 	case 2:
 	{
-        high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	    RedSocialEj2 r2(nombre);
-		nombreArchivo = r2.nombre();
-		r2.solverEj2();
-        high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
-        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-        std::cout << "It took me " << time_span.count() << " seconds.";
-        std::cout << std::endl;
+	    RedSocialEj2 r2;
+		r2.solverEj2();
+		cout << endl;
 		break;
 	}
 	case 3:
 	{
-		auto t1 = high_resolution_clock::now();
-		Schedule s(nombre);
-		nombreArchivo = s.nombre();
-		cout << "El maximo beneficio es " << s.solver_bu() << endl;
-		auto t2 = high_resolution_clock::now();
-		auto tiempo = duration_cast<milliseconds>(t2 - t1);
-		duration<double, std::milli> tiempo_d = t2 - t1;
-		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
-		break;
+		Schedule s;
+		cout << s.solver_bu() << endl;
+		//s.td() si se quiere la resolucion top down
+		s.imprimir();
+		cout << endl;
 	}
 	case 4:
 	{	
-		auto t1 = high_resolution_clock::now();
-		ScheduleGol sg(nombre);
-		nombreArchivo = sg.nombre();
-		cout << "El maximo beneficio es " << sg.solver() << endl;
-		auto t2 = high_resolution_clock::now();
-		auto tiempo = duration_cast<milliseconds>(t2 - t1);
-		duration<double, std::milli> tiempo_d = t2 - t1;
-		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
+
+		ScheduleGol sg;
+		cout << sg.solver() << endl;
+		sg.imprimir();
+		cout << endl;
 		break;
 	}
 	    default: break;
 	}
 
-	cout << "Estas trabajando con el ej " << n << endl;
-
-	cout << "Y con el archivo " << nombreArchivo << endl;
-	
 	return 0;
 }
 

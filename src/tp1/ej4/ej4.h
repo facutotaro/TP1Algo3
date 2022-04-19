@@ -10,17 +10,15 @@ class ScheduleGol
 {
 public:
 
-	ScheduleGol(string nombreDelArchivo);
+	ScheduleGol();
 
 	~ScheduleGol();
 
     int solver();
 
-	string nombre() const; 
+    void imprimir();
 
 private:
-	string _nombreDelArchivo;
-
     int _cantActividades;
 
     vector<pair<int, int>> _actividades;

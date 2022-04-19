@@ -3,37 +3,24 @@
 #include <utility>
 #include <iostream>
 
-ScheduleGol::ScheduleGol(std::string s)
+ScheduleGol::ScheduleGol()
 {
-	_nombreDelArchivo = s;
+    cin >> _cantActividades;
 
-    ifstream my_file;
-    my_file.open("../ej4/instancias-4/instancias/interval_instance_" + _nombreDelArchivo, ios::in);
-    if (!my_file) {
-    }
-    else {
-        my_file >> _cantActividades;
+    _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
+    _sched = vector<int>(2*_cantActividades + 1, -1);
 
-        _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
-        _sched = vector<int>(2*_cantActividades + 1, -1);
-
-        int i = 0;
-        while(!my_file.eof()){
-            my_file >> _actividades[i].first;
-            my_file >> _actividades[i].second;
-            i++;
-        }
+    int i = 0;
+    while(i < _cantActividades){
+        cin >> _actividades[i].first;
+        cin >> _actividades[i].second;
+        i++;
     }
 }
 
 ScheduleGol::~ScheduleGol()
 {
 
-}
-
-string ScheduleGol::nombre() const
-{
-	return _nombreDelArchivo;
 }
 
 int ScheduleGol::solver() {
@@ -83,4 +70,12 @@ int ScheduleGol::solver() {
      */
 
     return res;
+}
+
+void ScheduleGol::imprimir()
+{
+    for (int i = 0; i < _solu.size(); i++)
+    {
+        cout << _solu[i] << " ";
+    }
 }

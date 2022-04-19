@@ -3,37 +3,26 @@
 #include <utility>
 #include <iostream>
 
-Schedule::Schedule(std::string s)
+Schedule::Schedule()
 {
-    _nombreDelArchivo = std::move(s);
+    cin >> _cantActividades;
 
-    ifstream my_file;
-    my_file.open("../ej3/instancias-3/instancias/" + _nombreDelArchivo, ios::in);
-    if (!my_file) {
+    _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
+    _beneficios = vector<int>(_cantActividades, 0);
+    _comienzoAct = vector<vector<int>>(2 * _cantActividades+2, vector<int>());
+    _actDespues = vector<int>(_cantActividades, 0);
+    M = vector<int>(_cantActividades + 1, 0);
+
+    int i = 0;
+
+    while (i < _cantActividades) {
+
+        cin >> _actividades[i].first;
+        cin >> _actividades[i].second;
+        cin >> _beneficios[i];
+
+        i++;
     }
-    else {
-        my_file >> _cantActividades;
-
-        _actividades = vector<pair<int, int>>(_cantActividades, make_pair(0, 0));
-        _beneficios = vector<int>(_cantActividades, 0);
-        _comienzoAct = vector<vector<int>>(2 * _cantActividades+2, vector<int>());
-        _actDespues = vector<int>(_cantActividades, 0);
-        M = vector<int>(_cantActividades + 1, 0);
-
-        int i = 0;
-
-        while (!my_file.eof()&&i<_cantActividades) {
-
-            my_file >> _actividades[i].first;
-            my_file >> _actividades[i].second;
-            my_file >> _beneficios[i];
-
-            i++;
-        }
-
-    }
-    my_file.close();
-
     //Creamos un vector de vectores con la hora a la que comienza una actividad
     for (int i = 0; i < _cantActividades; i++)
     {
@@ -64,11 +53,6 @@ Schedule::Schedule(std::string s)
 Schedule::~Schedule()
 {
 
-}
-
-string Schedule::nombre() const
-{
-return _nombreDelArchivo;
 }
 
 int Schedule::solver_td() const {
@@ -167,4 +151,12 @@ vector<vector<int>> Schedule::solu(vector<int> &w)
         v.push_back(k);
     }
     return v;
+}
+
+void Schedule::imprimir()
+{
+    for (int i = 0; i < M.size(); i++)
+    {
+        cout << M[i] << " ";
+    }
 }
