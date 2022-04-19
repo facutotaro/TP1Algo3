@@ -46,12 +46,22 @@ int ScheduleGol::solver() {
             }
         }
     }
+
+    /* Ponemos en nuestro vector _sched (de 2n + 1 posiciones) las actividades según su tiempo de
+     * finalización. Si tenemos dos actividades que terminan a la misma hora, priorizamos las más cortas.
+     */
+
     vector<int> ordenFin;
     for(int & i : _sched){
         if(i != -1){
             ordenFin.push_back(i);
         }
     }
+
+    /* Ahora a medida que van apareciendo actividades en el vector _sched, es decir recorriendo de
+     * izquierda a derecha y salteandonos las posiciones de _sched que tienen -1, agregamos las
+     * actividades en orden de tiempo de finalización en un vector ordenFin.
+     */
 
     int res = 1;
     _solu.push_back(ordenFin[0]);
@@ -61,5 +71,16 @@ int ScheduleGol::solver() {
             res++;
         }
     }
+
+    /* La variable res representa la solución del problema, que es cuántas actividades voy a poder
+     * hacer teniendo en cuenta que el beneficio de cada actividad es 1. Por otro lado, yo sé que
+     * siempre voy a querer agarrarme la actividad que más temprano termine e inductivamente (luego
+     * se usa este dato en la demostración) el caso base se da con el conjunto de actividades
+     * seleccionadas vacío, por lo que siguiendo la estrategia agregaríamos la actividad que más
+     * temprano finaliza (linea 67, coincide con la primera de ordenFin). Luego recorremos todo
+     * ordenFin y si encontramos una actividad que no solape horarios con la última actividad agregada
+     * incrementamos la solución y agregamos la actividad al vector solución.
+     */
+
     return res;
 }
