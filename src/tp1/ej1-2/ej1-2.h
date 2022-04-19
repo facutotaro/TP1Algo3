@@ -45,13 +45,9 @@ public:
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-<<<<<<< HEAD
-    int solver();
-=======
     void particionConMenorInfluencia(vector<vector<Actor>> &I, vector<Actor> &K) const;
 
     bool noTieneAmigos(const vector<Actor>& grupo, Actor a) const;
->>>>>>> FedeJuli
 
 private:
 	string _nombreDelArchivo;
