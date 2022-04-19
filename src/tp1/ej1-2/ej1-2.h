@@ -39,7 +39,7 @@ public:
 
 	bool sonAmigos(Actor v, Actor u) const;
 
-    void solver();
+    int solver();
 
 private:
 	string _nombreDelArchivo;

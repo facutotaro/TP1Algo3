@@ -79,20 +79,23 @@ bool Actor::operator==(Actor v) const {
 int influenciaMaximaVista = -1;
 vector<Actor> res;
 
-void RedSocial::solver() {
+int RedSocial::solver() {
     vector<Actor> Q;
-    vector<Actor> V = _actores;
+    vector<Actor> &V = _actores;
     vector<Actor> sinPopulares;
     filtrarPopulares(Q, V, sinPopulares);
     cliqueMasInfluyente(Q, sinPopulares);
-    cout << "[";
+    //cout << "[";
     int i = 0;
     while (i < res.size()-1){
-        cout << res[i].id << ", ";
+        //cout << res[i].id << ", ";
+        res[i].id;
         i++;
     }
-    cout << res[i].id << "]" << endl;
-    cout << influenciaDeGrupo(res) << endl;
+    //cout << res[i].id << "]" << endl;
+    res[i].id;
+    //cout << influenciaDeGrupo(res) << endl;
+    return influenciaDeGrupo(res);
 }
 
 void RedSocial::cliqueMasInfluyente(vector<Actor>& Q, vector<Actor>& K) const{

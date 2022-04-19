@@ -10,6 +10,12 @@
 using namespace std;
 using namespace std::chrono;
 
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
+using std::chrono::milliseconds;
+
+
 int main(int argc, char *argv[])
 {
 	ios::sync_with_stdio(false);
@@ -23,29 +29,51 @@ int main(int argc, char *argv[])
 	{
 	case 1:
 	{
-        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+		auto t1 = high_resolution_clock::now();
 		RedSocial r1(nombre);
 		nombreArchivo = r1.nombre();
-		cout << nombreArchivo << endl;
+		cout << "El maximo beneficio es " << r1.solver() << endl;
+		//r1.solver();
+		auto t2 = high_resolution_clock::now();
+		auto tiempo = duration_cast<milliseconds>(t2 - t1);
+		duration<double, std::milli> tiempo_d = t2 - t1;
+		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
 		break;
 	}
 	case 2:
 	{
+		auto t1 = high_resolution_clock::now();
 		RedSocial r2(nombre);
 		nombreArchivo = r2.nombre();
+		r2.solver();
+		auto t2 = high_resolution_clock::now();
+		auto tiempo = duration_cast<milliseconds>(t2 - t1);
+		duration<double, std::milli> tiempo_d = t2 - t1;
+		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
 		break;
 	}
 	case 3:
 	{
+		auto t1 = high_resolution_clock::now();
 		Schedule s(nombre);
 		nombreArchivo = s.nombre();
 		cout << "El maximo beneficio es " << s.solver_bu() << endl;
+		auto t2 = high_resolution_clock::now();
+		auto tiempo = duration_cast<milliseconds>(t2 - t1);
+		duration<double, std::milli> tiempo_d = t2 - t1;
+		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
 		break;
 	}
 	case 4:
-	{
+	{	
+		auto t1 = high_resolution_clock::now();
 		ScheduleGol sg(nombre);
 		nombreArchivo = sg.nombre();
+		cout << "El maximo beneficio es " << sg.solver() << endl;
+		auto t2 = high_resolution_clock::now();
+		auto tiempo = duration_cast<milliseconds>(t2 - t1);
+		duration<double, std::milli> tiempo_d = t2 - t1;
+		cout << "Tarda " << tiempo_d.count()/1000 << " segundos" << endl;
 		break;
 	}
 	}
