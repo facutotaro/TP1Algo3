@@ -2,7 +2,8 @@
 //
 
 #include "tp1.h"
-#include "ej1-2/ej1-2.h"
+#include "ej1/ej1.h"
+#include "ej2/ej2.h"
 #include "ej3/ej3.h"
 #include "ej4/ej4.h"
 #include<chrono>
@@ -28,7 +29,7 @@ int main()
 	case 1:
 	{
 
-		RedSocial r1(nombre);
+		RedSocialEj1 r1(nombre);
 		nombreArchivo = r1.nombre();
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 		r1.solverEj1();
@@ -42,7 +43,7 @@ int main()
 	case 2:
 	{
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	    RedSocial r2(nombre);
+	    RedSocialEj2 r2(nombre);
 		nombreArchivo = r2.nombre();
 		r2.solverEj2();
         high_resolution_clock::time_point t2 = high_resolution_clock::now();

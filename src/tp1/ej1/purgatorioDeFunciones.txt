@@ -246,3 +246,45 @@ void RedSocial::invariante(vector<Actor>& Q, vector<Actor>& K) const{
         }
         return influenciaI;
     */
+
+void particionConMenorInfluencia(vector<vector<Actor>> &I, vector<Actor> &K) const;
+
+
+void RedSocial::solverEj2() {
+    //Armo vector de tuplas
+    vector<Actor> K = _actores;
+    vector<vector<Actor>> I;
+    particionConMenorInfluencia(I, K);
+    int influencia = 0;
+    cout << "[";
+    int i = 0;
+    while (i < I.size()) {
+        cout << "[";
+        int j = 0;
+        while (j < I[i].size() - 1) {
+            cout << I[i][j].id << ", ";
+            j++;
+        }
+        cout << I[i][j].id << "] , ";
+
+        influencia += I[i][0].influencia;
+        i++;
+    }
+    cout << "]" << endl;
+    cout << "Suma de Influencias: " << influencia << endl;
+
+}
+
+void RedSocial::particionConMenorInfluencia(vector<vector<Actor>> &I, vector<Actor> &K) const { //K tiene tuplas: <actor, bool> donde el booleano es true si el actor ya fue agregado a I.
+    for (int i = K.size()-1; i >= 0 ; --i) {
+        bool metido = false;
+        for (auto & j : I) {
+            if (noTieneAmigos(j, K[i])){
+                j.push_back(K[i]);
+                metido = true;
+                break;
+            }
+        }
+        if(!metido) I.push_back({K[i]});
+    }
+}
