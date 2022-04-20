@@ -24,8 +24,6 @@ int main(int argc, char *argv[])
 	int n = stoi(argv[1]);
 	string nombre;
 	cin >> nombre;
-	string name = nombre;
-	cout << nombre << endl;
 	switch (n)
 	{
 	case 1:

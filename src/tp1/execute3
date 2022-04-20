@@ -1,9 +1,32 @@
-echo "instancias de ej3" > hola.output
-echo "" >> hola.output
-for i in ../ej3/instancias-3/instancias/*.txt
+echo "instancias de ej3" > res3.output
+echo "" >> res3.output
+for i in ../instancias/instancias-ej3/*.txt
 do
 	base_name=$(basename $i)
-	echo ${base_name} >> hola.output
-	/usr/bin/time -f "Tardó: %e" -o hola.output -a timeout 800 ./tp1 3 < $i >> hola.output
-	echo "" >> hola.output
+	echo ${base_name} >> res3.output
+	echo $i > name.txt
+	/usr/bin/time -f "Tardó: %e" -o res3.output -a timeout 800 ./tp1 3 < name.txt >> res3.output
+	echo "" >> res3.output
+done
+
+echo "instancias de ej4" > res4.output
+echo "" >> res4.output
+for i in ../instancias/instancias-ej4/*
+do
+	base_name=$(basename $i)
+	echo ${base_name} >> res4.output
+	echo $i > name.txt
+	/usr/bin/time -f "Tardó: %e" -o res4.output -a timeout 800 ./tp1 4 < name.txt >> res4.output
+	echo "" >> res4.output
+done
+
+echo "instancias de ej1" > res1.output.output
+echo "" >> res1.output.output
+for i in ../instancias/instancias-ej1-2bis/*
+do
+	base_name=$(basename $i)
+	echo ${base_name} >> res1.output.output
+	echo $i > name.txt
+	/usr/bin/time -f "Tardó: %e" -o res1.output.output -a timeout 800 ./tp1 1 < name.txt >> res1.output.output
+	echo "" >> res1.output.output
 done
