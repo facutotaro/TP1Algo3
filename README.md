@@ -1,7 +1,8 @@
 # Instrucciones para compilación
 Utilizando Linux
 Requisitos: Debemos tener instalado Cmake
-
+Para instalarlo debemos ejecutar el comando:
+sudo apt-get install cmake
 
 Para compilar tenemos que hacer lo siguiente:
 1) Luego accedemos al directorio tp1 con el comando cd src/tp1
