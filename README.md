@@ -1,6 +1,7 @@
 # Instrucciones para compilación
 Utilizando Linux
 Requisitos: Debemos tener instalado Cmake
+
 Para instalarlo debemos ejecutar el comando:
 sudo apt-get install cmake
 
