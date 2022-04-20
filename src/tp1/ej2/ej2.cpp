@@ -51,7 +51,8 @@ RedSocialEj2::RedSocialEj2(std::string s) {
         sort(_actores.begin(), _actores.end(), [](Actor2 v, Actor2 u) {
             return v.influencia < u.influencia;
         });
-
+        int influenciaMaximaVista2 = -1;
+        vector<Actor2> _res;
     }
 }
 
@@ -72,8 +73,8 @@ bool RedSocialEj2::Actor2::operator==(Actor2 v) const {
     return this->id == v.id;
 }
 
-// Variables Globales:
-int influenciaMaximaVista2 = -1;
+
+
 
 void RedSocialEj2::solverEj2() {
     vector<Actor2> Q;
@@ -81,13 +82,13 @@ void RedSocialEj2::solverEj2() {
     vector<Actor2> sinPopulares;
     filtrarPopulares(Q, V, sinPopulares);
     cliqueMasInfluyente(Q, sinPopulares);
-    /*cout << "[";
+    
     int i = 0;
-    while (i < res.size() - 1) {
-        cout << res[i].id << ", ";
+    while (i < _res.size() - 1) {
+        cout << _res[i].id << " ";
         i++;
     }
-    cout << res[i].id << "]" << endl;*/
+    cout << _res[i].id << endl;
     cout << influenciaMaximaVista2 << endl;
 }
 
@@ -95,6 +96,7 @@ void RedSocialEj2::cliqueMasInfluyente(vector<Actor2> &Q, vector<Actor2> &K) con
     if (K.empty()) { // Caso Base
         if (influenciaDeGrupo(Q) > influenciaMaximaVista2) {
             influenciaMaximaVista2 = influenciaDeGrupo(Q);
+            _res = Q;
         }
     } else {
         vector<vector<Actor2>> I;

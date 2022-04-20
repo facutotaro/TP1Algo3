@@ -49,6 +49,8 @@ private:
     vector<Actor2> _actores;
     vector<pair<int, int>> _amistades;
     vector<vector<bool>> _matrizDeAmistades;
+    mutable int influenciaMaximaVista2;
+    mutable vector<Actor2> _res;
 
 
 };

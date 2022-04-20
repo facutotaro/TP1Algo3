@@ -2,14 +2,28 @@ Utilizando linux
 Requisitos: Debemos tener instalado Cmake
 Para compilar tenemos que hacer lo siguiente:
 1) Nos ubicamos en el directorio en el cual tenemos descargado el archivo y abrimos una terminal
-2) Lo descomprimimos usando el comando tar -xf archive.tar.gz
+2) Lo descomprimimos usando el comando tar -xf TP1Algo3.tar.gz
 3) Luego accedemos al directorio tp1 con el comando cd src/tp1
 4) Alli dentro ejecutamos la siguiente secuencia de comandos:
 mkdir build
 cd build 
 cmake ..
 make
-5) Con eso ya tenemos el codigo compilado. Para ejecutarlo en la linea de comandos ejecutamos ./tp1 <ej> < <instancia> donde <ej> es el numero de ejercicio e instancia es el path relativo al archivo de entrada.
-Se imprimirá en pantalla el resultado óptimo y el tiempo de ejecucion.
-6) Si se quieren agregar archivos en los directorios de los ejercicios hay un directorio con el nombre instancias-i donde i es el numero de ejercicio
-el cual tiene dentro una carpeta que se llama instancias. Las instancias que se quieran agregar deben estar dentro de ese directorio.
+
+5) Para correr varias instancias que se encuentren en un directorio podemos hacer lo siguiente
+echo "instancias" > <archivo de salida>
+echo "" >> <archivo de salida>
+for i in <ruta>/*
+do
+	base_name=$(basename $i)
+	echo ${base_name} >> <archivo de salida>
+	echo $i > name.txt
+	/usr/bin/time -f "Tardó: %e" -o <archivo de salida> -a timeout 800 ./tp1 <ej> < name.txt >> res2.output
+	echo "" >> <archivo de salida>
+done
+
+donde <ruta> es ruta relativa a la carpeta build, <archivo de salida> es el nombre del archivo donde queremos ejecutar los resultados y <ej> es el numero de ejecicio
+
+5bis) Si queremos ejecutar un solo archivo podemos ejecutar ./tp1 <ej> y pulsamos "Enter" y luego escribimos el nombre del archivo incluyendo a su ruta relativa a la carpeta build.
+
+

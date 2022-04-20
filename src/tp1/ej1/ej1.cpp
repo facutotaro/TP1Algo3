@@ -4,7 +4,7 @@ RedSocialEj1::RedSocialEj1(std::string s) {
     _nombreDelArchivo = std::move(s);
 
     ifstream my_file;
-    my_file.open(_nombreDelArchivo, ios::in);
+    my_file.open(_nombreDelArchivo , ios::in);
     if (!my_file) {
     } else {
         string o, p;
@@ -51,7 +51,8 @@ RedSocialEj1::RedSocialEj1(std::string s) {
         sort(_actores.begin(), _actores.end(), [](Actor1 v, Actor1 u) {
             return v.influencia < u.influencia;
         });
-
+        int influenciaMaximaVista1 = -1;
+        vector<Actor1> _res;
     }
 }
 
@@ -72,8 +73,7 @@ bool RedSocialEj1::Actor1::operator==(Actor1 v) const {
     return this->id == v.id;
 }
 
-// Variables Globales:
-int influenciaMaximaVista1 = -1;
+
 
 void RedSocialEj1::solverEj1() {
     vector<Actor1> Q;
@@ -81,19 +81,20 @@ void RedSocialEj1::solverEj1() {
     vector<Actor1> sinPopulares;
     filtrarPopulares(Q, V, sinPopulares);
     cliqueMasInfluyente(Q, sinPopulares);
-    /*cout << "[";
     int i = 0;
-    while (i < res.size() - 1) {
-        cout << res[i].id << ", ";
+    while (i < _res.size() - 1) {
+        cout << _res[i].id << " ";
         i++;
     }
-    cout << res[i].id << "]" << endl;*/
+    cout << _res[i].id << endl;
     cout << influenciaMaximaVista1 << endl;
 }
 
 void RedSocialEj1::cliqueMasInfluyente(vector<Actor1> &Q, vector<Actor1> &K) const {
     if (K.empty()) { // Caso Base
-        if (influenciaDeGrupo(Q) > influenciaMaximaVista1) influenciaMaximaVista1 = influenciaDeGrupo(Q);
+        if (influenciaDeGrupo(Q) > influenciaMaximaVista1)
+        {influenciaMaximaVista1 = influenciaDeGrupo(Q);
+        _res = Q;} 
     } else {
         if (influenciaDeGrupo(Q) + influenciaDeGrupo(K) <= influenciaMaximaVista1) return;
         else {
